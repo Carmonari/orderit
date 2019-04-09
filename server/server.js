@@ -2,10 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+var cors = require('cors'); 
 
 const users = require('./routes/api/users');
 
 const app = express();
+
+app.use(cors())
 
 //Body parser middleware
 app.use(bodyParser.urlencoded({extended: false}));
@@ -19,6 +22,9 @@ mongoose.connect(db, { useNewUrlParser: true }).then(() => console.log('MongoDB 
 
 //Passport middleware
 app.use(passport.initialize());
+
+// Passport config
+require('./config/passport')(passport);
 
 app.use('/api/users', users);
 

@@ -7,6 +7,7 @@ const passport = require('passport');
 
 // Load input validation
 const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
 
 //Load user model
 const User = require('../../models/User');
@@ -47,7 +48,55 @@ router.post('/register', async (req, res) => {
     
   }
   catch(err) {
-    return res.status(500).json({ msg: "Fail post register " + err });
+    return res.status(500).json({ msg: "Fail post register " });
+  }
+});
+
+// @route   POST api/users/login
+// @desc    Login User / Returning JWT Token
+// @access  Public
+router.post('/login', async (req, res) => {
+  try{
+    const { errors, isValid } = validateLoginInput(req.body);
+
+    //Check validation
+    if(!isValid){
+      return res.status(400).json(errors);
+    }
+
+    const email = req.body.email;
+    const password = req.body.password;
+
+    //Find user by email
+    let user = await User.findOne({ email });
+    if(!user){
+      errors.email = 'Usario no encontrado';
+      return res.status(404).json(errors);
+    }
+
+    //Check password
+    let checkPass = await bcrypt.compare(password, user.password);
+    if(checkPass){
+      const payload = {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }; // Create JWT Payload
+
+      //Sign Token
+      let token = await jwt.sign(payload, keys.secretOrKey, { expiresIn: 18000 });
+      res.json({
+        success: true,
+        token: 'Bearer ' + token
+      })
+    }
+    else{
+      errors.password = 'Password incorrecto';
+      return res.status(400).json(errors);
+    }
+  }
+  catch(err){
+    return console.log(err);
   }
 });
 
