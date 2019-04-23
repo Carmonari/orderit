@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
+import { Link } from 'react-router-native';
 import { List, Avatar } from 'react-native-paper';
 import styles from './css';
 
@@ -7,9 +8,13 @@ const ControlPanel = (props) => {
   return (
     <View>
       <View style={styles.fondoGrisOxford}>
-        <View style={styles.viewImgEmail}>
-          <Avatar.Image size={80} source={require('../../../assets/user.png')} />
-          <Text style={styles.textNombre}>Carlos</Text>
+        <View>
+          <Link to="/perfil-info" component={TouchableHighlight}>
+            <View style={styles.viewImgEmail}>
+              <Avatar.Image size={80} source={require('../../../assets/user.png')} />
+              <Text style={styles.textNombre}>Carlos</Text>
+            </View>
+          </Link>
         </View>
         <View style={styles.margen10}>
           <Text style={styles.colorBlanco}>charlie@teorema-studio.com</Text>

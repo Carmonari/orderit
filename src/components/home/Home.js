@@ -5,10 +5,16 @@ import { Link } from 'react-router-native';
 import Header from '../common/Header';
 import HomeLayout from './HomesLayout';
 import SideDrawer from '../common/SideDrawer';
+import { getHomes } from '../../actions/homesActions'; 
+import { connect } from 'react-redux';
 
 class Home extends Component {
   state = {
     open: false
+  }
+
+  componentDidMount(){
+    this.props.getHomes();
   }
   
   openClose = () => {
@@ -17,35 +23,28 @@ class Home extends Component {
     })
   }
   render() {
-    const homes = [
-      {
-        img: require('../../../assets/home-market.png'),
-        title: 'Supermaket',
-        subtitle: 'Comprar tu super'
-      },
-      {
-        img: require('../../../assets/homes-celulares.png'),
-        title: 'Electrónicos',
-        subtitle: 'Comprar tu super'
-      },
-      {
-        img: require('../../../assets/homes-ropayaccesorios.png'),
-        title: 'Ropa y accesorios',
-        subtitle: 'Subtitulo'
-      }
-    ];
+    const { homes } = this.props.home;
+    let homesList;
+
+    if(homes === null){
+      homesList = '';
+    } else{
+      homesList = (
+        homes.map((h, i) => {
+          return (
+            <Link key={h.name} to="/products">
+              <HomeLayout title={h.name} subtitle={h.subtitulo} img={h.img} />
+            </Link>
+          )
+        })
+      );
+    }
     return (
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} />
         <ScrollView>
           {
-            homes.map(h => {
-              return (
-                <Link key={h.title} to="/products">
-                  <HomeLayout title={h.title} subtitle={h.title} img={h.img} />
-                </Link>
-              )
-            })
+            homesList
           }
         </ScrollView>
       </SideDrawer>
@@ -54,7 +53,12 @@ class Home extends Component {
 }
 
 Home.propTypes = {
-
+  getHomes: PropTypes.func.isRequired,
+  home: PropTypes.object.isRequired
 }
 
-export default Home;
+const mapStateToProps = state => ({
+  home: state.home
+})
+
+export default connect(mapStateToProps, { getHomes })(Home);

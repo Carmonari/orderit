@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { FlatList, Text } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { PropTypes } from 'prop-types';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import Product from './Product';
+import styles from './css';
 
 class Products extends Component {
   state = {
@@ -20,11 +21,13 @@ class Products extends Component {
     return (
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} />
-        <FlatList
-          data={[{key: 'a'}, {key: 'b'}]}
-          numColumns="2"
-          renderItem={({item}) => <Product key={item.key} /> }
-        />
+        <View style={styles.flex1}>
+          <FlatList
+            data={[{key: 'a'}, {key: 'b'}, {key: 'c'}, {key: 'd'}, {key: 'e'}]}
+            numColumns="2"
+            renderItem={({item}) => <Product key={item.key} /> }
+          />
+        </View>
       </SideDrawer>
     )
   }

@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-const InputText = ({name, label, value, disabled, multiline, onChange, placeholder, error, password, keyboardType}) => {
+const InputText = ({name, label, value, disabled, multiline, onChange, placeholder, error, password, keyboardType, style}) => {
   return(
-    <View>
+    <View style={style}>
       <TextInput
         label={label}
         value={value}

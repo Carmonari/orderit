@@ -14,6 +14,8 @@ import Register from './src/components/log/Register';
 import ForgotPass from './src/components/log/ForgotPass';
 import Home from './src/components/home/Home';
 import Products from './src/components/products/Productos';
+import PerfilInfo from './src/components/perfil/PerfilInfo';
+import Perfil from './src/components/perfil/Perfil';
 
 //Check for token
 AsyncStorage.getItem('jwtToken').then(token => {
@@ -50,6 +52,8 @@ export default class App extends Component {
               <Route exact path="/forgot" component={ForgotPass} />
               <PrivateRoute exact path="/home" component={Home} />
               <PrivateRoute exact path="/products" component={Products} />
+              <PrivateRoute exact path="/perfil-info" component={PerfilInfo} />
+              <PrivateRoute exact path="/perfil" component={Perfil} />
             </Switch>
           </Router>
         </PaperProvider>

@@ -1,15 +1,19 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Card, Paragraph, IconButton  } from 'react-native-paper';
+import styles from './css';
 
 const Product = (props) => {
   return(
-    <View>
-      <Card>
-        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+    <View style={styles.margen15}>
+      <Card style={styles.card}>
+        <Card.Cover source={require('../../../assets/helado.png')} />
+        <Card.Title
+          title="Helado"
+          left={(props) => <IconButton size={20} icon="favorite" />}
+        />
         <Card.Content>
-          <Title>Platano</Title>
-          <Paragraph>$30 pieza</Paragraph>
+          <Paragraph>$30 pieza <Text style={{color: 'red'}}> -10%</Text></Paragraph>
         </Card.Content>
       </Card>
     </View>

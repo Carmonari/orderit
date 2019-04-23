@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const styles = StyleSheet.create({
   fondoGris: {
-    backgroundColor: '#fdfdfd',
+    backgroundColor: '#F3F0EC',
     minHeight: Dimensions.get('window').height
   },
   fondoGrisOxford: {

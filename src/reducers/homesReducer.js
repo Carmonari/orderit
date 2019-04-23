@@ -1,18 +1,16 @@
 import isEmpty from '../validation/is-empty';
-import { SET_CURRENT_USER } from '../actions/types';
+import { GET_HOMES } from '../actions/types';
 
 const initialState = {
-  isAuthenticated: false,
-  user: {}
+  homes: []
 }
 
 export default function(state = initialState, action){
   switch(action.type){
-    case SET_CURRENT_USER:
+    case GET_HOMES:
       return {
         ...state,
-        isAuthenticated: !isEmpty(action.payload),
-        user: action.payload
+        homes: action.payload
       }
     default:
       return state;
