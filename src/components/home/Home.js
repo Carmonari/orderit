@@ -5,7 +5,8 @@ import { Link } from 'react-router-native';
 import Header from '../common/Header';
 import HomeLayout from './HomesLayout';
 import SideDrawer from '../common/SideDrawer';
-import { getHomes } from '../../actions/homesActions'; 
+import { getHomes } from '../../actions/homesActions';
+import { getSections } from '../../actions/sectionsActions';
 import { connect } from 'react-redux';
 
 class Home extends Component {
@@ -15,6 +16,7 @@ class Home extends Component {
 
   componentDidMount(){
     this.props.getHomes();
+    this.props.getSections();
   }
   
   openClose = () => {
@@ -32,7 +34,7 @@ class Home extends Component {
       homesList = (
         homes.map((h, i) => {
           return (
-            <Link key={h.name} to="/products">
+            <Link key={h._id} to={`/products/${h.name}`}>
               <HomeLayout title={h.name} subtitle={h.subtitulo} img={h.img} />
             </Link>
           )
@@ -54,6 +56,7 @@ class Home extends Component {
 
 Home.propTypes = {
   getHomes: PropTypes.func.isRequired,
+  getSections: PropTypes.func.isRequired,
   home: PropTypes.object.isRequired
 }
 
@@ -61,4 +64,4 @@ const mapStateToProps = state => ({
   home: state.home
 })
 
-export default connect(mapStateToProps, { getHomes })(Home);
+export default connect(mapStateToProps, { getHomes, getSections })(Home);

@@ -6,6 +6,8 @@ var cors = require('cors');
 
 const users = require('./routes/api/users');
 const homes = require('./routes/api/homes');
+const sections = require('./routes/api/sections');
+const products = require('./routes/api/products');
 
 const app = express();
 
@@ -29,6 +31,8 @@ require('./config/passport')(passport);
 
 app.use('/api/users', users);
 app.use('/api/homes', homes);
+app.use('/api/sections', sections);
+app.use('/api/products', products);
 
 const port = process .env.PORT || 5000;
 

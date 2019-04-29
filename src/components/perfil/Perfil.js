@@ -8,7 +8,6 @@ import InputText from '../common/InputText';
 
 class Perfil extends Component {
   state = {
-    open: false,
     name: '',
     aPaterno: '',
     aMaterno: '',
@@ -28,7 +27,7 @@ class Perfil extends Component {
 
   render() {
     return (
-      <SideDrawer open={this.state.open}>
+      <SideDrawer>
         <Header menu={false} open={this.back} />
         <View style={{flex: 1}}>
           <View style={{alignItems: 'center', marginTop: 20}}>
