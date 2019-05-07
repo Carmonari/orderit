@@ -5,12 +5,25 @@ const passport = require('passport');
 //Load user model
 const Products = require('../../models/Products');
 
-// @route   GET api/products/:idHome
+// @route   GET api/products/home/:idHome
 // @desc    Get products
 // @access  Private
-router.get('/:idHome', passport.authenticate('jwt', { session: false}), async (req, res) => {
+router.get('/home/:idHome', passport.authenticate('jwt', { session: false}), async (req, res) => {
   try{
     let products = await Products.find({home: req.params.idHome}).sort({ date: -1});
+    res.json(products);
+  }
+  catch(err){
+    res.status(400).json({ noproductsfound: 'No hay productos'})
+  }
+});
+
+// @route   GET api/products/section/:idHome
+// @desc    Get products
+// @access  Private
+router.get('/section/:idHome', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try{
+    let products = await Products.find({seccion: req.params.idHome}).sort({ date: -1});
     res.json(products);
   }
   catch(err){

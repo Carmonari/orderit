@@ -12,12 +12,12 @@ const ControlPanel = (props) => {
           <Link to="/perfil-info" component={TouchableHighlight}>
             <View style={styles.viewImgEmail}>
               <Avatar.Image size={80} source={require('../../../assets/user.png')} />
-              <Text style={styles.textNombre}>{props.user.name}</Text>
+              <Text style={styles.textNombre}>{props.infoUser.name}</Text>
             </View>
           </Link>
         </View>
         <View style={styles.margen10}>
-          <Text style={styles.colorBlanco}>{props.user.email}</Text>
+          <Text style={styles.colorBlanco}>{props.infoUser.email}</Text>
         </View>
       </View>
       <View style={{backgroundColor: '#41CE6C'}}>
@@ -32,6 +32,7 @@ const ControlPanel = (props) => {
             title="Favoritos"
             titleStyle={styles.colorBlanco}
             left={props => <List.Icon {...props} icon="favorite" color="#FFF" />}
+            onPress={() => props.history.push('/favorites')}
           />
           {
             props.home.homes.map(h => {
@@ -50,6 +51,7 @@ const ControlPanel = (props) => {
                         title={v.name}
                         titleStyle={styles.colorBlanco}
                         left={props => <Image resizeMode="contain" style={{width: 30}} source={{uri: `http://10.0.2.2:5001/secciones/${v.img}`}} />}
+                        onPress={() => props.history.push(`/products/seccion/${v.name}`)}
                       />
                     )
                   }

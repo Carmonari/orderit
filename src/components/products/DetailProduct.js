@@ -11,7 +11,7 @@ class DetailProduct extends Component {
   constructor(props){
     super(props);
     this.state = {
-      
+      cantidad: 1
     }
   }
 
@@ -21,6 +21,22 @@ class DetailProduct extends Component {
 
   back = () => {
     this.props.history.goBack();
+  }
+
+  rest = () => {
+    if(this.state.cantidad > 1){
+      sumar = this.state.cantidad - 1;
+      this.setState({
+        cantidad: sumar
+      });
+    }
+  }
+
+  add = () => {
+    sumar = this.state.cantidad + 1;
+    this.setState({
+      cantidad: sumar
+    });
   }
 
   render(){
@@ -51,11 +67,11 @@ class DetailProduct extends Component {
 
             <View style={{flexDirection: 'row', marginHorizontal: 15, justifyContent: 'space-between'}}>
               <View style={{flexDirection: 'row'}}>
-                <IconButton icon="remove" size={20} />
+                <IconButton icon="remove" size={20} onPress={this.rest} />
                 <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: 30, paddingRight: 30}}>
-                  <Text>5</Text>
+                  <Text>{this.state.cantidad}</Text>
                 </View>
-                <IconButton icon="add" size={20} />
+                <IconButton icon="add" size={20} onPress={this.add} />
               </View>
               <View>
                 <Button mode="contained" onPress={() => console.log('Pressed')}>

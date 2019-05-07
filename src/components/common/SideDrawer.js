@@ -5,12 +5,11 @@ import SideMenu from 'react-native-side-menu';
 import ControlPanel from './ControlPanel';
 import { withRouter } from 'react-router-native';
 import styles from './css';
-import { getSections } from '../../actions/sectionsActions';
 import { connect } from 'react-redux';
 
 const SideDrawer = (props) => {
   return(
-    <SideMenu menu={<ControlPanel history={props.history} home={props.home} section={props.section} {...props.auth} />} isOpen={props.open}>
+    <SideMenu menu={<ControlPanel history={props.history} home={props.home} section={props.section} {...props.user} />} isOpen={props.open}>
       <View style={styles.fondoGris}>
         {props.children}
       </View>
@@ -19,14 +18,13 @@ const SideDrawer = (props) => {
 }
 
 SideDrawer.propTypes = {
-  getSections: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  section: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth,
   section: state.section,
-  home: state.home
+  home: state.home,
+  user: state.user
 })
 
-export default withRouter(connect(mapStateToProps, { getSections })(SideDrawer));
+export default withRouter(connect(mapStateToProps)(SideDrawer));

@@ -100,4 +100,43 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// @route   GET api/users/profile/:id
+// @desc    Profile
+// @access  Private
+router.get('/profile/:id', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    let perfil = await User.findById(req.params.id, ['name', 'email', 'aPaterno', 'aMaterno', 'cel']);
+    res.json(perfil);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the server")
+  }
+});
+
+// @route   PUT api/users/profile/:id
+// @desc    Profile
+// @access  Private
+router.put('/profile/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let checkEmail = await User.findOne({ email: req.body.email });
+    if(checkEmail){
+      if(checkEmail._id != req.params.id){
+        return res.status(400).json({email: 'Email already exists'});
+      }
+    }
+    let fields = {
+      name: req.body.name,
+      email: req.body.email,
+      aPaterno: req.body.aPaterno,
+      aMaterno: req.body.aMaterno,
+      cel: req.body.cel
+    }
+    let perfil = await User.findOneAndUpdate({"_id": req.params.id}, fields, {new: true});
+    res.json(perfil);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+})
+
 module.exports = router;

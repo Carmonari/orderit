@@ -11,7 +11,6 @@ export const loginUser = (userData) => async (dispatch) => {
       // Save to localstorage
       const { token } = res.data;
       // Set token to ls
-      console.log(token + " token")
       await AsyncStorage.setItem('jwtToken', token);
       //Set token to auth header
       setAuthToken(token);

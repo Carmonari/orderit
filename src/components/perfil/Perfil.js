@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { PropTypes } from 'prop-types';
-import { Avatar } from 'react-native-paper';
+import { Avatar, Button } from 'react-native-paper';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import InputText from '../common/InputText';
+import styles from '../common/css';
+import { getProfile, editProfile } from '../../actions/usersActions';
+import { connect } from 'react-redux';
 
 class Perfil extends Component {
   state = {
@@ -13,6 +16,21 @@ class Perfil extends Component {
     aMaterno: '',
     cel: '',
     email: ''
+  }
+
+  componentDidMount(){
+    let { user } = this.props.auth
+    this.props.getProfile(user.id);
+
+    let { name, email, aPaterno, aMaterno, cel } = this.props.user.infoUser;
+
+    this.setState({
+      name,
+      email,
+      aMaterno,
+      aPaterno,
+      cel
+    })
   }
   
   back = () => {
@@ -25,22 +43,35 @@ class Perfil extends Component {
     })
   }
 
+  guardar = () => {
+    const editProfile = {
+      name: this.state.name,
+      email: this.state.email,
+      aPaterno: this.state.aPaterno,
+      aMaterno: this.state.aMaterno,
+      cel: this.state.cel
+    }
+    let { user } = this.props.auth
+
+    this.props.editProfile(user.id, editProfile, this.props.history);
+  }
+
   render() {
     return (
       <SideDrawer>
         <Header menu={false} open={this.back} />
-        <View style={{flex: 1}}>
-          <View style={{alignItems: 'center', marginTop: 20}}>
+        <View style={styles.flex1}>
+          <View style={[styles.alginCenter, styles.margenT20]}>
             <Avatar.Image size={128} source={require('../../../assets/user.png')} />
           </View>
-          <View style={{backgroundColor: '#FFF', margin: 20}}>
+          <View style={styles.margen20}>
             <InputText
               label="Nombre"
               value={this.state.name}
               name="name"
               onChange={this.onChange}
               placeholder="Nombre"
-              style={{marginTop: 10, marginHorizontal: 10}}
+              style={[styles.margenT10, styles.margenH10]}
             />
             <InputText
               label="Apellido paterno"
@@ -48,7 +79,7 @@ class Perfil extends Component {
               name="aPaterno"
               onChange={this.onChange}
               placeholder="Apellido paterno"
-              style={{marginTop: 10, marginHorizontal: 10}}
+              style={[styles.margenT10, styles.margenH10]}
             />
             <InputText
               label="Apellido materno"
@@ -56,7 +87,7 @@ class Perfil extends Component {
               name="aMaterno"
               onChange={this.onChange}
               placeholder="Apellido Materno"
-              style={{marginTop: 10, marginHorizontal: 10}}
+              style={[styles.margenT10, styles.margenH10]}
             />
             <InputText
               label="Teléfono celular"
@@ -65,7 +96,7 @@ class Perfil extends Component {
               onChange={this.onChange}
               placeholder="Teléfono celular"
               keyboardType="numeric"
-              style={{marginTop: 10, marginHorizontal: 10}}
+              style={[styles.margenT10, styles.margenH10]}
             />
             <InputText
               label="Email"
@@ -73,8 +104,13 @@ class Perfil extends Component {
               name="email"
               onChange={this.onChange}
               placeholder="Email"
-              style={{margin: 10}}
+              style={styles.margen10}
             />
+            <View style={styles.margen10}>
+              <Button mode="contained" onPress={this.guardar}>
+                Guardar
+              </Button>
+            </View>
           </View>
         </View>
       </SideDrawer>
@@ -83,7 +119,15 @@ class Perfil extends Component {
 }
 
 Perfil.propTypes = {
-
+  auth: PropTypes.object.isRequired,
+  getProfile: PropTypes.func.isRequired,
+  editProfile: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 }
 
-export default Perfil;
+const mapStateToProps = state => ({
+  auth: state.auth,
+  user: state.user
+});
+
+export default connect(mapStateToProps, { getProfile, editProfile })(Perfil);

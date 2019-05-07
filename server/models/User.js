@@ -16,6 +16,15 @@ const UserSchema = new Schema({
     type: String,
     require: true
   },
+  aPaterno: {
+    type: String
+  },
+  aMaterno: {
+    type: String
+  },
+  cel: {
+    type: String
+  },
   date: {
     type: Date,
     default: Date.now

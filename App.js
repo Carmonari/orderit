@@ -17,6 +17,7 @@ import Products from './src/components/products/Productos';
 import PerfilInfo from './src/components/perfil/PerfilInfo';
 import Perfil from './src/components/perfil/Perfil';
 import DetailProduct from './src/components/products/DetailProduct';
+import Favorites from './src/components/favorites/Favorites';
 
 //Check for token
 AsyncStorage.getItem('jwtToken').then(token => {
@@ -52,10 +53,11 @@ export default class App extends Component {
               <Route exact path="/register" component={Register} />
               <Route exact path="/forgot" component={ForgotPass} />
               <PrivateRoute exact path="/home" component={Home} />
-              <PrivateRoute exact path="/products/:idHome" component={Products} />
+              <PrivateRoute exact path="/products/:homeSeccion/:idHome" component={Products} />
               <PrivateRoute exact path="/detail-product/:idProduct" component={DetailProduct} />
               <PrivateRoute exact path="/perfil-info" component={PerfilInfo} />
               <PrivateRoute exact path="/perfil" component={Perfil} />
+              <PrivateRoute exact path="/favorites" component={Favorites} />
             </Switch>
           </Router>
         </PaperProvider>

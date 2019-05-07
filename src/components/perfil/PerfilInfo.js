@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, ScrollView } from 'react-native';
 import { PropTypes } from 'prop-types';
-import { Link } from 'react-router-native';
 import { Avatar, List } from 'react-native-paper';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
