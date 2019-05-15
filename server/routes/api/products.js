@@ -41,6 +41,68 @@ router.get('/detail/:idProduct', passport.authenticate('jwt', { session: false})
   } catch(err){
     res.status(400).json({ noproductfound: 'no existe el producto' })
   }
+});
+
+// @route   PUT api/products/like/:id
+// @desc    Like a product
+// @access  Private
+router.put('/like/:id', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    const product = await Products.findById(req.params.id);
+
+    // Check if the product has already been liked
+    if(product.likes.filter(like => like.user.toString() === req.user.id).length > 0){
+      return res.status(400).json({ msg: 'Product already liked'});
+    }
+
+    product.likes.unshift({ user: req.user.id });
+
+    await product.save();
+
+    res.json(product.likes);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   PUT api/products/unlike/:id
+// @desc    Like a product
+// @access  Private
+router.put('/unlike/:id', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    const product = await Products.findById(req.params.id);
+
+    // Check if the product has already been liked
+    if(product.likes.filter(like => like.user.toString() === req.user.id).length === 0){
+      return res.status(400).json({ msg: 'Product no tiene fav'});
+    }
+
+    // Get remove index
+    const removeIndex = product.likes.map(like => like.user.toString()).indexOf(req.user.id);
+
+    product.likes.splice(removeIndex, 1);
+
+    await product.save();
+
+    res.json(product.likes);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   GET api/products/like
+// @desc    get user likes
+// @access  Private
+router.get('/like', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    const products = await Products.find({ 'likes.user': req.user.id });
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 })
 
 

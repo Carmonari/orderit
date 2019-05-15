@@ -18,7 +18,8 @@ const SideDrawer = (props) => {
 }
 
 SideDrawer.propTypes = {
-  section: PropTypes.object.isRequired
+  section: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({

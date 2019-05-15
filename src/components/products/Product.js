@@ -1,17 +1,28 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { Card, Paragraph, IconButton  } from 'react-native-paper';
 import styles from './css';
 
 const Product = (props) => {
   const filtro = props.sections.filter(res => res.name == props.seccion && res.descuento > props.descuento);
+  const icono = props.findUserLike(props.likes) ? (
+    <TouchableOpacity onPress={() => props.unLike(props._id)} >
+      <IconButton size={20} icon='favorite' />
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity onPress={() => props.addLike(props._id)} >
+      <IconButton size={20} icon='favorite-border' />
+    </TouchableOpacity>
+  );
   return(
     <View style={styles.margen15}>
-      <Card style={styles.card} onPress={() => props.history.push(`/detail-product/${props._id}`)}>
-        <Card.Cover source={{ uri: `http://10.0.2.2:5001/productos/${props.img}`}} />
+      <Card style={styles.card} >
+        <TouchableHighlight onPress={() => props.history.push(`/detail-product/${props._id}`)}>
+          <Card.Cover source={{ uri: `http://10.0.2.2:5001/productos/${props.img}`}} />
+        </TouchableHighlight>
         <Card.Title
           title={props.name}
-          left={(props) => <IconButton size={20} icon="favorite" />}
+          left={() => icono}
         />
         <Card.Content>
           <Paragraph>${props.precio} {props.unidad}

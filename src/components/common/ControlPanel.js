@@ -3,15 +3,17 @@ import { View, Text, TouchableHighlight, Image } from 'react-native';
 import { Link } from 'react-router-native';
 import { List, Avatar } from 'react-native-paper';
 import styles from './css';
+import isEmpty from '../../validation/is-empty';
 
 const ControlPanel = (props) => {
+  let image = isEmpty(props.infoUser.avatar) ? require('../../../assets/user.png') : ({ uri: `http://10.0.2.2:5000/${props.infoUser.avatar}` })
   return (
     <View>
       <View style={styles.fondoGrisOxford}>
         <View>
           <Link to="/perfil-info" component={TouchableHighlight}>
             <View style={styles.viewImgEmail}>
-              <Avatar.Image size={80} source={require('../../../assets/user.png')} />
+              <Avatar.Image size={80} source={image} />
               <Text style={styles.textNombre}>{props.infoUser.name}</Text>
             </View>
           </Link>

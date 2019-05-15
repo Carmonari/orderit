@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, TouchableHighlight } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { Avatar, Button } from 'react-native-paper';
 import Header from '../common/Header';
@@ -8,28 +8,34 @@ import InputText from '../common/InputText';
 import styles from '../common/css';
 import { getProfile, editProfile } from '../../actions/usersActions';
 import { connect } from 'react-redux';
+import  ImagePicker from 'react-native-image-picker';
+import isEmpty from '../../validation/is-empty';
 
 class Perfil extends Component {
   state = {
+    _id: '',
     name: '',
     aPaterno: '',
     aMaterno: '',
     cel: '',
-    email: ''
+    email: '',
+    avatar: ''
   }
 
   componentDidMount(){
     let { user } = this.props.auth
     this.props.getProfile(user.id);
 
-    let { name, email, aPaterno, aMaterno, cel } = this.props.user.infoUser;
+    let { _id, name, email, aPaterno, aMaterno, cel, avatar } = this.props.user.infoUser;
 
     this.setState({
+      _id,
       name,
       email,
       aMaterno,
       aPaterno,
-      cel
+      cel,
+      avatar: { uri: `http://10.0.2.2:5000/${avatar}` }
     })
   }
   
@@ -56,13 +62,60 @@ class Perfil extends Component {
     this.props.editProfile(user.id, editProfile, this.props.history);
   }
 
+  image = () => {
+    var options = {
+      title: 'Select Image',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+      if (response.didCancel) {
+        console.warn('User cancelled image picker');
+      } else if (response.error) {
+      console.warn('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+      console.warn('User tapped custom button: ', response.customButton);
+      } else {
+        let source = { uri: response.uri }
+        this.setState({ avatar: source })
+        console.log('User selected a file form camera or gallery', response);
+        const data = new FormData();
+        data.append('id', this.state._id);
+        data.append('name', response.fileName);
+        data.append('fileData', {
+          uri : response.uri,
+          type: response.type,
+          name: response.fileName,
+        });
+        const config = {
+          method: 'POST',
+          headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+          },
+          body: data,
+        };
+        fetch("http://10.0.2.2:5000/api/users/upload", config)
+        .then((checkStatusAndGetJSONResponse) => {       
+          console.log(checkStatusAndGetJSONResponse);
+        }).catch((err)=>{console.log(err)});
+      }
+    })
+  }
+
   render() {
+    let image = isEmpty(this.state.avatar) ? require('../../../assets/user.png') : this.state.avatar
     return (
       <SideDrawer>
         <Header menu={false} open={this.back} />
         <View style={styles.flex1}>
           <View style={[styles.alginCenter, styles.margenT20]}>
-            <Avatar.Image size={128} source={require('../../../assets/user.png')} />
+            <TouchableHighlight onPress={ () => this.image() } >
+              <Avatar.Image size={120} source={image} />
+            </TouchableHighlight>
           </View>
           <View style={styles.margen20}>
             <InputText

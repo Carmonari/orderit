@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { NativeRouter as Router, Route, Switch } from "react-router-native";
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import jwt_decode from 'jwt-decode';
 import { Provider } from 'react-redux';
+import SplashScreen from 'react-native-splash-screen'
 import store from './store';
 
 import { setCurrentUser, logoutUser } from './src/actions/authActions';
@@ -18,6 +19,7 @@ import PerfilInfo from './src/components/perfil/PerfilInfo';
 import Perfil from './src/components/perfil/Perfil';
 import DetailProduct from './src/components/products/DetailProduct';
 import Favorites from './src/components/favorites/Favorites';
+import Cart from './src/components/common/Cart';
 
 //Check for token
 AsyncStorage.getItem('jwtToken').then(token => {
@@ -43,6 +45,11 @@ const theme = {
 };
 
 export default class App extends Component {
+
+  componentDidMount() {
+    SplashScreen.hide();
+  }
+
   render() {
     return (
       <Provider store={store}>
@@ -58,6 +65,7 @@ export default class App extends Component {
               <PrivateRoute exact path="/perfil-info" component={PerfilInfo} />
               <PrivateRoute exact path="/perfil" component={Perfil} />
               <PrivateRoute exact path="/favorites" component={Favorites} />
+              <PrivateRoute exact path="/cart" component={Cart} />
             </Switch>
           </Router>
         </PaperProvider>

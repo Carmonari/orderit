@@ -53,6 +53,14 @@ const ProductSchema = new Schema({
     type: Number,
     default: 0
   },
+  likes: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
+      }
+    }
+  ],
   date: {
     type: Date,
     default: Date.now

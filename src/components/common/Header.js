@@ -1,5 +1,6 @@
 import React from "react";
 import { Image } from "react-native";
+import { Link } from "react-router-native";
 import { Appbar, withTheme } from 'react-native-paper';
 
 const Header = (props) => {
@@ -16,7 +17,9 @@ const Header = (props) => {
         title={<Image style={{width: 125, height: 35}} source={require('../../../assets/orderit.png')} />}
       />
       <Appbar.Action icon="search" onPress={this._onSearch} />
-      <Appbar.Action color="#41CE6C" icon="shopping-cart" onPress={this._onMore} />
+      <Link to='/cart'>
+        <Appbar.Action color="#41CE6C" icon="shopping-cart" />
+      </Link>
     </Appbar.Header>
   )
 }

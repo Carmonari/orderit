@@ -12,6 +12,44 @@ const validateLoginInput = require('../../validation/login');
 //Load user model
 const User = require('../../models/User');
 
+/*Avatar*/
+var fs = require('fs');
+var multer  = require('multer');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads') //Destination folder
+  },
+  filename: function (req, file, cb) {
+    let fileObj = {
+      "image/png": ".png",
+      "image/jpeg": ".jpeg",
+      "image/jpg": ".jpg"
+    };
+    let img = req.body.id + req.body.name + fileObj[file.mimetype];
+    cb(null, img) //File name after saving    
+  }
+})
+
+var upload = multer({ storage: storage });
+
+//other imports and code will go here
+router.post('/upload', upload.single('fileData'), async (req, res) => {
+  try{
+    let fileObj = {
+      "image/png": ".png",
+      "image/jpeg": ".jpeg",
+      "image/jpg": ".jpg"
+    };
+    let img = req.body.id + req.body.name + fileObj[req.file.mimetype];
+    let avatar = await User.findOneAndUpdate({ "_id": req.body.id }, { $set: { "avatar": img } });
+    res.json(avatar);
+  } catch(err){
+    console.error(err)
+    res.status(500).send("Server Err")
+  }
+});
+
 // @route   Post api/users/register
 // @desc    Register user
 // @access  Public
@@ -105,7 +143,7 @@ router.post('/login', async (req, res) => {
 // @access  Private
 router.get('/profile/:id', passport.authenticate('jwt', { session: false}), async (req, res) => {
   try {
-    let perfil = await User.findById(req.params.id, ['name', 'email', 'aPaterno', 'aMaterno', 'cel']);
+    let perfil = await User.findById(req.params.id, ['name', 'email', 'aPaterno', 'aMaterno', 'cel', 'avatar']);
     res.json(perfil);
   } catch (err) {
     console.error(err);

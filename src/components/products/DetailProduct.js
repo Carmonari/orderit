@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { View, Image, Text } from 'react-native';
 import { PropTypes } from 'prop-types';
 import SideDrawer from '../common/SideDrawer';
+import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../common/Header';
-import { Button, IconButton } from 'react-native-paper';
+import { Button, IconButton, Snackbar  } from 'react-native-paper';
 import { getProduct } from '../../actions/productActions';
 import { connect } from 'react-redux';
 
@@ -11,7 +12,8 @@ class DetailProduct extends Component {
   constructor(props){
     super(props);
     this.state = {
-      cantidad: 1
+      cantidad: 1,
+      visible: false
     }
   }
 
@@ -37,6 +39,24 @@ class DetailProduct extends Component {
     this.setState({
       cantidad: sumar
     });
+  }
+
+  agregar = async (product) => {
+    product['quantity'] = this.state.cantidad;
+    try {
+      let res = await AsyncStorage.getItem('CART');
+      if(!res){
+        await AsyncStorage.setItem('CART', JSON.stringify([product]));
+      } else {
+        let items = JSON.parse(res);
+        items.push(product);
+        await AsyncStorage.setItem('CART', JSON.stringify(items))
+      }
+      this.setState({visible: true});
+      
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   render(){
@@ -74,12 +94,16 @@ class DetailProduct extends Component {
                 <IconButton icon="add" size={20} onPress={this.add} />
               </View>
               <View>
-                <Button mode="contained" onPress={() => console.log('Pressed')}>
+                <Button mode="contained" onPress={() => this.agregar(detailProduct)}>
                   Agregar
                 </Button>
               </View>
             </View>
-
+            <Snackbar
+              visible={this.state.visible}
+              onDismiss={() => this.setState({ visible: false })}
+              duration={3500}
+            > Se ha agregado al carrito de compras con éxito </Snackbar>
           </View>
         </View>
       </SideDrawer>

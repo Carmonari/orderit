@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-var cors = require('cors'); 
+var cors = require('cors');
 
 const users = require('./routes/api/users');
 const homes = require('./routes/api/homes');
@@ -28,6 +28,9 @@ app.use(passport.initialize());
 
 // Passport config
 require('./config/passport')(passport);
+
+// static middleware
+app.use(express.static('uploads'));
 
 app.use('/api/users', users);
 app.use('/api/homes', homes);

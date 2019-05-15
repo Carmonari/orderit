@@ -6,10 +6,28 @@ import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import { logoutUser } from '../../actions/authActions';
 import { connect } from 'react-redux';
+import { getProfile } from '../../actions/usersActions';
+import isEmpty from '../../validation/is-empty';
 
 class PerfilInfo extends Component {
   state = {
-    open: false
+    open: false,
+    avatar: ''
+  }
+
+  componentDidMount(){
+    const { user } = this.props.auth;
+
+    this.props.getProfile(user.id);
+    const { infoUser } = this.props.user;
+
+    this.setState({ avatar: { uri: `http://10.0.2.2:5000/${infoUser.avatar}`}})
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.user.infoUser.avatar !== this.props.user.infoUser.avatar){
+      this.setState({ avatar: { uri: `http://10.0.2.2:5000/${nextProps.user.infoUser.avatar}`}})
+    }
   }
   
   openClose = () => {
@@ -18,12 +36,13 @@ class PerfilInfo extends Component {
     })
   }
   render() {
+    let image = isEmpty(this.state.avatar) ? require('../../../assets/user.png') : this.state.avatar
     return (
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} />
         <View style={{flex: 1}}>
           <View style={{alignItems: 'center', marginTop: 20}}>
-            <Avatar.Image size={128} source={require('../../../assets/user.png')} />
+            <Avatar.Image size={128} source={image} />
           </View>
           <View >
             <ScrollView>
@@ -64,11 +83,13 @@ class PerfilInfo extends Component {
 }
 
 PerfilInfo.propTypes = {
-  logoutUser: PropTypes.func.isRequired
+  logoutUser: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  user: state.user
 })
 
-export default connect(mapStateToProps, { logoutUser })(PerfilInfo);
+export default connect(mapStateToProps, { logoutUser, getProfile })(PerfilInfo);
