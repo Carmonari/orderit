@@ -38,6 +38,12 @@ const styles = StyleSheet.create({
   margenT10: {
     marginTop: 10
   },
+  margenB10: {
+    marginBottom: 10
+  },
+  margenB30: {
+    marginBottom: 30
+  },
   margenH10: {
     marginHorizontal: 10
   },

@@ -23,6 +23,7 @@ import Cart from './src/components/common/Cart';
 import Direcciones from './src/components/perfil/Direcciones';
 import Facturacion from './src/components/perfil/Facturacion';
 import AddDir from './src/components/perfil/AddDir';
+import EditAdd from './src/components/perfil/EditAdd';
 
 //Check for token
 AsyncStorage.getItem('jwtToken').then(token => {
@@ -69,6 +70,7 @@ export default class App extends Component {
               <PrivateRoute exact path="/perfil" component={Perfil} />
               <PrivateRoute exact path="/direcciones" component={Direcciones} />
               <PrivateRoute exact path="/add-direccion" component={AddDir} />
+              <PrivateRoute exact path="/edit-direccion/:idAdd" component={EditAdd} />
               <PrivateRoute exact path="/datos-facturacion" component={Facturacion} />
               <PrivateRoute exact path="/favorites" component={Favorites} />
               <PrivateRoute exact path="/cart" component={Cart} />

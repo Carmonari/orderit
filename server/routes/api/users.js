@@ -217,6 +217,56 @@ router.get('/direcciones', passport.authenticate('jwt', { session: false }), asy
   }
 });
 
+// @route   GET api/users/direcciones/:id
+// @desc    direccion
+// @access  Private
+router.get('/direcciones/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let address = await User.findById(req.user.id);
+
+    const getIndex = address.direcciones.map(dire => dire._id.toString()).indexOf(req.params.id);
+
+    res.json(address.direcciones[getIndex]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+})
+
+// @route   Patch api/users/direcciones/:id
+// @desc    Update address
+// @access  Private
+router.patch('/direcciones/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let address = await User.findById(req.user.id);
+
+    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais } = req.body;
+
+    address.direcciones.map(dire => {
+      if(dire._id.toString() === req.params.id) {
+        return (
+          dire.name = name,
+          dire.calle = calle,
+          dire.numero_ext = numero_ext,
+          dire.numero_int = numero_int,
+          dire.cp = cp,
+          dire.colonia = colonia,
+          dire.municipio = municipio,
+          dire.estado = estado,
+          dire.pais = pais
+        )
+      }
+    });
+
+    await address.save();
+    res.json(address);
+    
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+})
+
 // @route   DELETE api/users/direcciones/:id
 // @desc    direcciones
 // @access  Private
@@ -242,7 +292,6 @@ router.patch('/direcciones/status/:id', passport.authenticate('jwt', { session: 
   try {
     let statusChange = await User.findById(req.user.id).select("direcciones");
 
-    // Get remove index
     statusChange.direcciones.map(status => {
       if(status._id.toString() === req.params.id) {
         return status.status = !status.status

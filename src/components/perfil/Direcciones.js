@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, Image, Alert } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { FAB, Button, Switch } from 'react-native-paper';
+import { Link } from 'react-router-native';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import styles from '../common/css';
@@ -67,18 +68,20 @@ class Direcciones extends Component {
                   <View style={{flex: 1, marginBottom: 15}}>
                     <View>
                       <Text style={{fontSize: 18, fontWeight: 'bold'}}>@{item.name}</Text>
-                    </View>                    
-                    <View style={{flex: 1, flexDirection: 'row'}}>
-                      <View style={{flex: 2}}>
-                        <Text>
-                          {item.calle} {item.numero_ext} {item.numero_int} {item.municipio} {item.colonia} {item.cp}
-                          {item.estado} {item.pais}
-                        </Text>
+                    </View>  
+                    <Link to={`/edit-direccion/${item._id}`}>                 
+                      <View style={{flex: 1, flexDirection: 'row'}}>
+                          <View style={{flex: 2}}>
+                            <Text>
+                              {item.calle} {item.numero_ext} {item.numero_int} {item.municipio} {item.colonia} {item.cp}
+                              {item.estado} {item.pais}
+                            </Text>
+                          </View>
+                          <View style={{flex: 1, alignItems: 'center'}}>
+                            <Image source={ require('../../../assets/ico-mapa.png') } />
+                          </View>
                       </View>
-                      <View style={{flex: 1, alignItems: 'center'}}>
-                        <Image source={ require('../../../assets/ico-mapa.png') } />
-                      </View>
-                    </View>
+                    </Link>
                     <View style={{alignItems: 'flex-start', flex: 1}}>
                       <Switch
                         value={item.status}

@@ -15,3 +15,4 @@ export const ADD_ADDRESS = 'ADD_ADDRESS';
 export const GET_ADDRESS = 'GET_ADDRESS';
 export const DELETE_ADDRESS = 'DELETE_ADDRESS';
 export const UPDATE_STATUS = 'UPDATE_STATUS';
+export const GET_ONE_ADDRESS = 'GET_ONE_ADDRESS';

@@ -1,7 +1,9 @@
-import { ADD_USER, GET_PROFILE, EDIT_PROFILE, ADD_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ADDRESS } from '../actions/types';
+import { ADD_USER, GET_PROFILE, EDIT_PROFILE, ADD_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ONE_ADDRESS,
+        GET_ADDRESS } from '../actions/types';
 
 const initialState = {
-  infoUser: {}
+  infoUser: {},
+  direccion: {}
 };
 
 export default function(state = initialState, action){
@@ -18,6 +20,11 @@ export default function(state = initialState, action){
       return {
         ...state,
         infoUser: action.payload
+      }
+    case GET_ONE_ADDRESS:
+      return {
+        ...state,
+        direccion: action.payload
       }
     case EDIT_PROFILE:
       return {

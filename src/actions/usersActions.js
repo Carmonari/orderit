@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { ADD_USER, GET_PROFILE, ADD_ADDRESS, GET_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ERRORS, CLEAR_ERRORS } from './types';
+import { ADD_USER, GET_PROFILE, ADD_ADDRESS, GET_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ONE_ADDRESS,
+        GET_ERRORS, CLEAR_ERRORS } from './types';
 
 //Add user
 export const addUser = (newUser, history) => async dispatch => {
@@ -72,6 +73,20 @@ export const addAddress = (direcciones, history) => async (dispatch) => {
   }
 }
 
+//Edit direccion
+export const editAddress = (id, direcciones, history) => async (dispatch) => {
+  try {
+    dispatch(clearErrors());
+    await axios.patch(`http://10.0.2.2:5000/api/users/direcciones/${id}`, direcciones);
+    history.push('/direcciones')
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
 // Get address
 export const getAddress = () => async (dispatch) => {
   try {
@@ -79,6 +94,23 @@ export const getAddress = () => async (dispatch) => {
     let res = await axios.get(`http://10.0.2.2:5000/api/users/direcciones`);
     dispatch({
       type: GET_ADDRESS,
+      payload: res.data
+    })
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
+// Get one address
+export const getOneAddress = (id) => async (dispatch) => {
+  try {
+    dispatch(clearErrors());
+    let res = await axios.get(`http://10.0.2.2:5000/api/users/direcciones/${id}`);
+    dispatch({
+      type: GET_ONE_ADDRESS,
       payload: res.data
     })
   } catch (err) {
