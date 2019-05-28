@@ -28,6 +28,84 @@ const UserSchema = new Schema({
   avatar: {
     type: String
   },
+  direcciones: [
+    {
+      name: {
+        type: String,
+        require: true
+      },
+      numero_ext: {
+        type: String
+      },
+      numero_int: {
+        type: String
+      },
+      calle:{
+        type: String
+      },
+      colonia: {
+        type: String
+      },
+      municipio: {
+        type: String
+      },
+      estado: {
+        type: String,
+        require: true
+      },
+      pais: {
+        type: String,
+        require: true
+      },
+      cp: {
+        type: String,
+        require: true
+      },
+      status: {
+        type: Boolean,
+        default: false
+      }
+    }
+  ],
+  facturas: [
+    {
+      name: {
+        type: String,
+        require: true
+      },
+      numero_ext: {
+        type: String
+      },
+      numero_int: {
+        type: String
+      },
+      calle:{
+        type: String
+      },
+      colonia: {
+        type: String
+      },
+      municipio: {
+        type: String
+      },
+      estado: {
+        type: String,
+        require: true
+      },
+      pais: {
+        type: String,
+        require: true
+      },
+      cp: {
+        type: String,
+        require: true
+      },
+      status: {
+        type: Boolean,
+        default: false
+      }
+    }
+  ],
   date: {
     type: Date,
     default: Date.now

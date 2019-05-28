@@ -175,6 +175,90 @@ router.put('/profile/:id', passport.authenticate('jwt', { session: false }), asy
     console.error(err);
     res.status(500).send("Err in the Server");
   }
+});
+
+// @route   PATCH api/users/direcciones
+// @desc    direcciones
+// @access  Private
+router.patch('/direcciones', passport.authenticate('jwt', { session: false }), async (req, res) =>{
+  try {
+    const { name, calle, numero_ext, numero_int, colonia, municipio, cp, estado, pais } = req.body;
+    let fields = {
+      name,
+      calle,
+      numero_ext,
+      numero_int,
+      colonia,
+      municipio,
+      estado,
+      pais,
+      cp
+    }
+    let address = await User.findById(req.user.id);
+    address.direcciones.unshift(fields);
+    let added = await address.save();
+    res.json(added);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+});
+
+// @route   GET api/users/direcciones
+// @desc    direcciones
+// @access  Private
+router.get('/direcciones', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let address = await User.findById(req.user.id).select("direcciones");
+    res.json(address);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+});
+
+// @route   DELETE api/users/direcciones/:id
+// @desc    direcciones
+// @access  Private
+router.delete('/direcciones/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let dire = await User.findById(req.user.id).select("direcciones");
+
+    const removeIndex = await dire.direcciones.map(item => item.id).indexOf(req.params.id);
+    await dire.direcciones.splice(removeIndex, 1);
+
+    await dire.save();
+    res.json(dire);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+});
+
+// @route   Patch api/users/direcciones/status/:id
+// @desc    Update status
+// @access  Private
+router.patch('/direcciones/status/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let statusChange = await User.findById(req.user.id).select("direcciones");
+
+    // Get remove index
+    statusChange.direcciones.map(status => {
+      if(status._id.toString() === req.params.id) {
+        return status.status = !status.status
+      } else {
+        return status.status = false
+      }
+    });
+
+    await statusChange.save();
+
+    res.json(statusChange);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
 })
 
 module.exports = router;

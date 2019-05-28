@@ -55,10 +55,12 @@ class PerfilInfo extends Component {
                 <List.Item
                   title="Direcciones"
                   left={() => <List.Icon color="#000" icon="location-on" />}
+                  onPress={() => this.props.history.push('/direcciones')}
                 />
                 <List.Item
                   title="Datos de facturación"
                   left={() => <List.Icon color="#000" icon="account-balance" />}
+                  onPress={() => this.props.history.push('/datos-facturacion')}
                 />
                 <List.Item
                   title="Formas de pago"
