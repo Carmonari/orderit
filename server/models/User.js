@@ -58,8 +58,7 @@ const UserSchema = new Schema({
         require: true
       },
       cp: {
-        type: String,
-        require: true
+        type: String
       },
       status: {
         type: Boolean,
@@ -70,6 +69,14 @@ const UserSchema = new Schema({
   facturas: [
     {
       name: {
+        type: String,
+        require: true
+      },
+      tipo_persona: {
+        type: String,
+        require: true
+      },
+      razon_social: {
         type: String,
         require: true
       },
@@ -97,8 +104,7 @@ const UserSchema = new Schema({
         require: true
       },
       cp: {
-        type: String,
-        require: true
+        type: String
       },
       status: {
         type: Boolean,

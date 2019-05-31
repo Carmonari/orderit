@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ADD_USER, GET_PROFILE, ADD_ADDRESS, GET_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ONE_ADDRESS,
-        GET_ERRORS, CLEAR_ERRORS } from './types';
+        ADD_BILL, GET_BILLS, DELETE_BILL, GET_ONE_BILL, GET_ERRORS, CLEAR_ERRORS } from './types';
 
 //Add user
 export const addUser = (newUser, history) => async dispatch => {
@@ -143,6 +143,106 @@ export const changeStatus = (id) => async (dispatch) => {
   try {
     dispatch(clearErrors());
     let res = await axios.patch(`http://10.0.2.2:5000/api/users/direcciones/status/${id}`);
+    dispatch({
+      type: UPDATE_STATUS,
+      payload: res.data
+    })
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
+//Add bills
+export const addBills = (bills, history) => async (dispatch) => {
+  try {
+    dispatch(clearErrors());
+    let res = await axios.patch(`http://10.0.2.2:5000/api/users/facturas`, bills);
+    dispatch({
+      type: ADD_BILL,
+      payload: res.data
+    });
+    history.push('/datos-facturacion')
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
+//Edit facturas
+export const editBill = (id, bills, history) => async (dispatch) => {
+  try {
+    dispatch(clearErrors());
+    await axios.patch(`http://10.0.2.2:5000/api/users/facturas/${id}`, bills);
+    history.push('/datos-facturacion')
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
+// Get bill
+export const getBills = () => async (dispatch) => {
+  try {
+    dispatch(clearErrors());
+    let res = await axios.get(`http://10.0.2.2:5000/api/users/facturas`);
+    dispatch({
+      type: GET_BILLS,
+      payload: res.data
+    })
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
+// Get one bill
+export const getOneBill = (id) => async (dispatch) => {
+  try {
+    dispatch(clearErrors());
+    let res = await axios.get(`http://10.0.2.2:5000/api/users/facturas/${id}`);
+    dispatch({
+      type: GET_ONE_BILL,
+      payload: res.data
+    })
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
+// delete bills
+export const deleteBill = (id) => async (dispatch) => {
+  try {
+    dispatch(clearErrors());
+    let res = await axios.delete(`http://10.0.2.2:5000/api/users/facturas/${id}`);
+    dispatch({
+      type: DELETE_BILL,
+      payload: res.data
+    })
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
+// change status Bills
+export const changeStatusBill = (id) => async (dispatch) => {
+  try {
+    dispatch(clearErrors());
+    let res = await axios.patch(`http://10.0.2.2:5000/api/users/facturas/status/${id}`);
     dispatch({
       type: UPDATE_STATUS,
       payload: res.data

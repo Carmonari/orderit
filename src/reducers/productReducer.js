@@ -1,5 +1,5 @@
 import isEmpty from '../validation/is-empty';
-import { GET_PRODUCTS_HOME, GET_PRODUCTS_SECTION, GET_PRODUCT, GET_PRODUCTS_FAV } from '../actions/types';
+import { GET_PRODUCTS_HOME, GET_PRODUCTS_SECTION, GET_PRODUCT, GET_PRODUCTS_FAV, GET_PRODUCTS_SEARCH } from '../actions/types';
 
 const initialState = {
   products: [],
@@ -9,11 +9,9 @@ const initialState = {
 export default function(state = initialState, action){
   switch(action.type){
     case GET_PRODUCTS_HOME:
-      return {
-        ...state,
-        products: action.payload
-      }
     case GET_PRODUCTS_SECTION:
+    case GET_PRODUCTS_FAV:
+    case GET_PRODUCTS_SEARCH:
       return {
         ...state,
         products: action.payload
@@ -22,11 +20,6 @@ export default function(state = initialState, action){
       return {
         ...state,
         detailProduct: action.payload
-      }
-    case GET_PRODUCTS_FAV:
-      return {
-        ...state,
-        products: action.payload
       }
     default:
       return state;

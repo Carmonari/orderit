@@ -16,7 +16,9 @@ const Header = (props) => {
         titleStyle={{flex: 1, textAlign: 'center'}}
         title={<Image style={{width: 125, height: 35}} source={require('../../../assets/orderit.png')} />}
       />
-      <Appbar.Action icon="search" onPress={this._onSearch} />
+      <Link to='/search'>
+        <Appbar.Action icon="search" />
+      </Link>
       <Link to='/cart'>
         <Appbar.Action color="#41CE6C" icon="shopping-cart" />
       </Link>

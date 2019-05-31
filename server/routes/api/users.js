@@ -231,7 +231,7 @@ router.get('/direcciones/:id', passport.authenticate('jwt', { session: false }),
     console.error(err);
     res.status(500).send("Err in the Server");
   }
-})
+});
 
 // @route   Patch api/users/direcciones/:id
 // @desc    Update address
@@ -260,7 +260,7 @@ router.patch('/direcciones/:id', passport.authenticate('jwt', { session: false }
 
     await address.save();
     res.json(address);
-    
+
   } catch (err) {
     console.error(err);
     res.status(500).send("Err in the Server");
@@ -308,6 +308,143 @@ router.patch('/direcciones/status/:id', passport.authenticate('jwt', { session: 
     console.error(err);
     res.status(500).send("Err in the Server");
   }
+});
+
+// @route   PATCH api/users/facturas
+// @desc    facturas
+// @access  Private
+router.patch('/facturas', passport.authenticate('jwt', { session: false }), async (req, res) =>{
+  try {
+    const { name, tipo_persona, razon_social, calle, numero_ext, numero_int, colonia, municipio, cp, estado, pais } = req.body;
+    let fields = {
+      name,
+      tipo_persona,
+      razon_social,
+      calle,
+      numero_ext,
+      numero_int,
+      colonia,
+      municipio,
+      estado,
+      pais,
+      cp
+    }
+    let bills = await User.findById(req.user.id);
+    bills.facturas.unshift(fields);
+    let added = await bills.save();
+    res.json(added);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+});
+
+// @route   GET api/users/facturas
+// @desc    facturas
+// @access  Private
+router.get('/facturas', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let bills = await User.findById(req.user.id).select("facturas");
+    res.json(bills);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+});
+
+// @route   GET api/users/facturas/:id
+// @desc    facturas
+// @access  Private
+router.get('/facturas/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let bills = await User.findById(req.user.id);
+
+    const getIndex = bills.facturas.map(bill => bill._id.toString()).indexOf(req.params.id);
+
+    res.json(bills.facturas[getIndex]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+});
+
+// @route   Patch api/users/facturas/:id
+// @desc    Update facturas
+// @access  Private
+router.patch('/facturas/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let bills = await User.findById(req.user.id);
+
+    const { name, razon_social, tipo_persona, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais } = req.body;
+
+    bills.facturas.map(bill => {
+      if(bill._id.toString() === req.params.id) {
+        return (
+          bill.name = name,
+          bill.tipo_persona = tipo_persona,
+          bill.razon_social = razon_social,
+          bill.calle = calle,
+          bill.numero_ext = numero_ext,
+          bill.numero_int = numero_int,
+          bill.cp = cp,
+          bill.colonia = colonia,
+          bill.municipio = municipio,
+          bill.estado = estado,
+          bill.pais = pais
+        )
+      }
+    });
+
+    await bills.save();
+    res.json(bills);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
 })
+
+// @route   DELETE api/users/facturas/:id
+// @desc    facturas
+// @access  Private
+router.delete('/facturas/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let bill = await User.findById(req.user.id).select("facturas");
+
+    const removeIndex = await bill.facturas.map(item => item.id).indexOf(req.params.id);
+    await bill.facturas.splice(removeIndex, 1);
+
+    await bill.save();
+    res.json(bill);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+});
+
+// @route   Patch api/users/facturas/status/:id
+// @desc    Update status
+// @access  Private
+router.patch('/facturas/status/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  try {
+    let statusChange = await User.findById(req.user.id).select("facturas");
+
+    statusChange.facturas.map(status => {
+      if(status._id.toString() === req.params.id) {
+        return status.status = !status.status
+      } else {
+        return status.status = false
+      }
+    });
+
+    await statusChange.save();
+
+    res.json(statusChange);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the Server");
+  }
+});
 
 module.exports = router;

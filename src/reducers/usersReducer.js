@@ -1,9 +1,10 @@
 import { ADD_USER, GET_PROFILE, EDIT_PROFILE, ADD_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ONE_ADDRESS,
-        GET_ADDRESS } from '../actions/types';
+        ADD_BILL, GET_BILLS, DELETE_BILL, GET_ONE_BILL, GET_ADDRESS } from '../actions/types';
 
 const initialState = {
   infoUser: {},
-  direccion: {}
+  direccion: {},
+  facturas: {}
 };
 
 export default function(state = initialState, action){
@@ -17,6 +18,8 @@ export default function(state = initialState, action){
     case GET_ADDRESS:
     case DELETE_ADDRESS:
     case UPDATE_STATUS:
+    case GET_BILLS:
+    case DELETE_BILL:
       return {
         ...state,
         infoUser: action.payload
@@ -25,6 +28,12 @@ export default function(state = initialState, action){
       return {
         ...state,
         direccion: action.payload
+      }
+    case ADD_BILL:
+    case GET_ONE_BILL:
+      return {
+        ...state,
+        facturas: action.payload
       }
     case EDIT_PROFILE:
       return {

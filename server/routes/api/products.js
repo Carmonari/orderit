@@ -31,6 +31,24 @@ router.get('/section/:idHome', passport.authenticate('jwt', { session: false}), 
   }
 });
 
+// @route   Post api/products/search
+// @desc    get products
+// @access  Private
+router.post('/search', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    const { search } = req.body;
+    let products = await Products.find({
+      $or: [
+        { name: new RegExp(`${search}`, 'i') }, { home: new RegExp(`${search}`, 'i') }, { seccion: new RegExp(`${search}`, 'i') },
+        { descripcion: new RegExp(`${search}`, 'i') }
+      ]
+    }).sort({ date: -1});
+    res.json(products);
+  } catch (err) {
+    res.status(400).json({ noproductsfound: 'No hay productos'})
+  }
+})
+
 // @route   GET api/products/detail/:idProduct
 // @desc    Get products
 // @access  Private
