@@ -5,6 +5,7 @@ import errorReducer from './errorReducer';
 import homesReducer from './homesReducer';
 import sectionsReducer from './sectionsReducer';
 import productReducer from './productReducer';
+import shoppingReducer from './shoppingReducer';
 
 export default combineReducers({
   auth: authReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   home: homesReducer,
   section: sectionsReducer,
   product: productReducer,
+  pedido: shoppingReducer,
   errors: errorReducer
 });

@@ -21,3 +21,5 @@ export const GET_BILLS = 'GET_BILLS';
 export const DELETE_BILL = 'DELETE_BILL';
 export const GET_ONE_BILL = 'GET_ONE_BILL';
 export const GET_PRODUCTS_SEARCH = 'GET_PRODUCTS_SEARCH';
+export const ADD_SHOPPING = 'ADD_SHOPPING';
+export const GET_SHOPPING = 'GET_SHOPPING';

@@ -3,6 +3,7 @@ package com.orderit;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.taessina.paypal.RNPaypalWrapperPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNPaypalWrapperPackage(),
             new ImagePickerPackage(),
             new AsyncStoragePackage(),
           new SplashScreenReactPackage(),

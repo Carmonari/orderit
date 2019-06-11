@@ -4,6 +4,7 @@ const passport = require('passport');
 
 //Load user model
 const Products = require('../../models/Products');
+const Pedidos = require('../../models/Pedidos');
 
 // @route   GET api/products/home/:idHome
 // @desc    Get products
@@ -121,7 +122,55 @@ router.get('/like', passport.authenticate('jwt', { session: false}), async (req,
     console.error(err);
     res.status(500).send("Server error");
   }
-})
+});
 
+// @route   Post api/products/pedidos
+// @desc    add pedidos
+// @access  Private
+router.post('/pedidos', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    const { idCompra, entrega, status, direccion, cart, total } = req.body;
+    newPedido = new Pedidos({
+      idCompra,
+      user: req.user.id,
+      entrega,
+      status,
+      direccion,
+      cart,
+      total
+    });
+    let savePedidos = await newPedido.save();
+    res.json(savePedidos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   GET api/products/pedidos
+// @desc    get pedidos
+// @access  Private
+router.get('/pedidos', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    let pedidos = await Pedidos.find({'user': req.user.id});
+    res.json(pedidos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   GET api/products/pedido:idCompra
+// @desc    get pedidos
+// @access  Private
+router.get('/pedidos/:idCompra', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    let pedidos = await Pedidos.findById(req.params.idCompra);
+    res.json(pedidos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router;

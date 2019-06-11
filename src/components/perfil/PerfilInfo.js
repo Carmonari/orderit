@@ -69,6 +69,7 @@ class PerfilInfo extends Component {
                 <List.Item
                   title="Tus pedidos"
                   left={() => <List.Icon color="#000" icon="shopping-basket" />}
+                  onPress={() => this.props.history.push('/pedidos')}
                 />
                 <List.Item
                   title="Logout"

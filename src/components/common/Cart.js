@@ -1,23 +1,36 @@
 import React, { Component } from 'react'
 import { View, Image, Text, ScrollView, Alert } from 'react-native';
-import { List, IconButton, Button } from 'react-native-paper';
+import { List, IconButton, Button, Divider } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import SideDrawer from '../common/SideDrawer';
 import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../common/Header';
+import { getAddress } from '../../actions/usersActions';
+import { addShopping } from '../../actions/shoppingActions';
+import { connect } from 'react-redux';
+
+import PayPal from 'react-native-paypal-wrapper';
+import isEmpty from '../../validation/is-empty';
+PayPal.initialize(PayPal.SANDBOX, "AbRCF2nU4tnsR7Hgn69oUoVK3Zkar-ruPtcSi_74r4EvWLgDH8WTeyOjX15YyWpcMewXHE6r90fkncms");
 
 class Cart extends Component {
   constructor(props){
     super(props);
     this.state = {
-      cartItems: []
+      cartItems: [],
+      entrega: []
     }
   }
 
   componentDidMount() {
+    this.props.getAddress();
     AsyncStorage.getItem('CART', (err, res) => {
       if (!res) this.setState({cartItems: []});
       else this.setState({cartItems: JSON.parse(res)});
+    });
+    AsyncStorage.getItem("ENTREGA", (err, res) => {
+      if (!res) this.setState({entrega: []});
+      else this.setState({entrega: JSON.parse(res)});
     });
   }
 
@@ -49,6 +62,7 @@ class Cart extends Component {
   renderItems() {
     let items = [];
     this.state.cartItems.map((item, i) => {
+      let total = item.precio * item.quantity;
       items.push(
         <View key={`${item._id}-${item.quantity}-${i}`}>
           <List.Item
@@ -57,7 +71,7 @@ class Cart extends Component {
             description={
               <Text>
                 {item.tipo} {"\n"}
-                <Text style={{fontSize: 18, fontWeight: 'bold', color: '#41ce6c'}}>${item.precio}</Text>
+                <Text style={{fontSize: 18, fontWeight: 'bold', color: '#41ce6c'}}>${item.precio} x {item.quantity} = ${total}</Text>
               </Text>
               }
             left={
@@ -72,7 +86,24 @@ class Cart extends Component {
     return items;
   }
 
+  subtotal = () => {
+    let subtotal = 0;
+    this.state.cartItems.map((item, i) => {
+      let total = item.precio * item.quantity;
+      subtotal += total;
+    })
+    return subtotal
+  }
+
+  removeAll() {
+    this.setState({cartItems: [], entrega: []})
+    AsyncStorage.setItem("CART",JSON.stringify([]));
+    AsyncStorage.setItem("ENTREGA",JSON.stringify([]));
+  }
+
   render(){
+    const subtotal = this.subtotal();
+    const total = subtotal + 100 + 100;
     return (
       <SideDrawer >
         <Header menu={false} open={this.back} />
@@ -82,7 +113,20 @@ class Cart extends Component {
               this.renderItems()
             }
             <View style={{margin: 10}}>
-              <Button style={{marginBottom: 10}} icon="payment" mode="contained" onPress={() => console.log('Pressed')}>
+              <Text>ORDEN DE COMPRA</Text>
+              <Divider />
+              <View style={{flexDirection: 'column', alignItems: 'flex-end'}}>
+                <Text>Subtotal: ${subtotal}</Text>
+                <Text>Comisión: $100</Text>
+                <Text>Envío express: $100</Text>
+                <Text>Total: ${total}</Text>
+              </View>
+            </View>
+            <View style={{margin: 10}}>
+              <Button style={{marginBottom: 10}} icon="date-range" mode="contained" onPress={() => this.props.history.push('/programar-envio')}>
+                Programar entrega
+              </Button>
+              <Button style={{marginBottom: 10}} icon="payment" mode="contained" onPress={() => this.checkoutPaypal()}>
                 Paypal
               </Button>
               <Button icon="android" mode="contained" onPress={() => console.log('Pressed')}>
@@ -94,6 +138,77 @@ class Cart extends Component {
       </SideDrawer>
     )
   }
+
+  checkoutPaypal = () => {
+    const { infoUser } = this.props.user
+    let total = 0.0;
+    let cart = [];
+    let getIndex = infoUser.direcciones.map(dire => dire.status.toString()).indexOf('true');
+    let indice = getIndex !== -1 ? getIndex : 0;
+    Alert.alert(
+      'Nombre de la dirección que se enviará: a ',
+      infoUser.direcciones[indice].name,
+      [
+        {text: 'Cambiar dirección', onPress: () => this.props.history.push('/direcciones')},
+        {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'Aceptar', onPress: () => {
+          this.state.cartItems.map((item, i) => {
+            let totalP = 0.0;
+            totalP = parseFloat(item.precio) * parseFloat(item.quantity);
+            total = total + totalP;
+            cart.push({
+              product: item._id,
+              name: item.name,
+              img: item.img,
+              cantidad: item.quantity,
+              precio: item.precio
+            })
+          });
+          PayPal.pay({
+            price: `${total}`,
+            currency: 'MXN',
+            description: "Costo total",
+          }).then(confirm => {
+            console.warn(JSON.stringify(confirm))
+            let fechaEntrega = isEmpty(this.state.entrega) ? '' : this.state.entrega;
+             if(confirm.response.state == 'approved'){
+               const newPedido = {
+                idCompra: confirm.response.id,
+                total: total,
+                cart,
+                direccion: [{
+                  name: infoUser.direcciones[indice].name,
+                  calle: infoUser.direcciones[indice].calle,
+                  numero_ext: infoUser.direcciones[indice].numero_ext,
+                  numero_int: infoUser.direcciones[indice].numero_int,
+                  colonia: infoUser.direcciones[indice].colonia,
+                  municipio: infoUser.direcciones[indice].municipio,
+                  estado: infoUser.direcciones[indice].estado,
+                  pais: infoUser.direcciones[indice].pais,
+                  cp: infoUser.direcciones[indice].cp
+                }],
+                entrega: fechaEntrega
+               }
+               this.props.addShopping(newPedido);
+               this.props.history.push('/home');
+               this.removeAll()
+             }
+          }).catch(error => console.log(error));
+        }},
+      ],
+      { cancelable: false }
+    )
+  }
 }
 
-export default Cart
+Cart.propTypes = {
+  getAddress: PropTypes.func.isRequired,
+  addShopping: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => ({
+  user: state.user
+})
+
+export default connect(mapStateToProps, { getAddress, addShopping })(Cart);
