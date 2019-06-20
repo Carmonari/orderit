@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { View, TouchableHighlight } from 'react-native';
+import { View, TouchableHighlight, ImageBackground } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { Avatar, Button } from 'react-native-paper';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import InputText from '../common/InputText';
 import styles from '../common/css';
+import ImagePicker from 'react-native-image-picker';
+import isEmpty from '../../validation/is-empty';
+import Boton from '../common/Boton';
 import { getProfile, editProfile } from '../../actions/usersActions';
 import { connect } from 'react-redux';
-import  ImagePicker from 'react-native-image-picker';
-import isEmpty from '../../validation/is-empty';
 
 class Perfil extends Component {
   state = {
@@ -111,61 +112,61 @@ class Perfil extends Component {
     return (
       <SideDrawer>
         <Header menu={false} open={this.back} />
-        <View style={styles.flex1}>
-          <View style={[styles.alginCenter, styles.margenT20]}>
-            <TouchableHighlight onPress={ () => this.image() } >
-              <Avatar.Image size={120} source={image} />
-            </TouchableHighlight>
-          </View>
-          <View style={styles.margen20}>
-            <InputText
-              label="Nombre"
-              value={this.state.name}
-              name="name"
-              onChange={this.onChange}
-              placeholder="Nombre"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Apellido paterno"
-              value={this.state.aPaterno}
-              name="aPaterno"
-              onChange={this.onChange}
-              placeholder="Apellido paterno"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Apellido materno"
-              value={this.state.aMaterno}
-              name="aMaterno"
-              onChange={this.onChange}
-              placeholder="Apellido Materno"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Teléfono celular"
-              value={this.state.cel}
-              name="cel"
-              onChange={this.onChange}
-              placeholder="Teléfono celular"
-              keyboardType="numeric"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Email"
-              value={this.state.email}
-              name="email"
-              onChange={this.onChange}
-              placeholder="Email"
-              style={styles.margen10}
-            />
-            <View style={styles.margen10}>
-              <Button mode="contained" onPress={this.guardar}>
-                Guardar
-              </Button>
+        <ImageBackground source={require('../../../assets/background.png')} style={styles.imagenFondo}>
+          <View style={styles.flex1}>
+            <View style={[styles.alginCenter, styles.margenT20]}>
+              <TouchableHighlight onPress={ () => this.image() } >
+                <Avatar.Image size={120} source={image} />
+              </TouchableHighlight>
+            </View>
+            <View style={styles.margen20}>
+              <InputText
+                label="Nombre"
+                value={this.state.name}
+                name="name"
+                onChange={this.onChange}
+                placeholder="Nombre"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Apellido paterno"
+                value={this.state.aPaterno}
+                name="aPaterno"
+                onChange={this.onChange}
+                placeholder="Apellido paterno"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Apellido materno"
+                value={this.state.aMaterno}
+                name="aMaterno"
+                onChange={this.onChange}
+                placeholder="Apellido Materno"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Teléfono celular"
+                value={this.state.cel}
+                name="cel"
+                onChange={this.onChange}
+                placeholder="Teléfono celular"
+                keyboardType="numeric"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Email"
+                value={this.state.email}
+                name="email"
+                onChange={this.onChange}
+                placeholder="Email"
+                style={styles.margen10}
+              />
+              <View style={styles.margen10}>
+                <Boton mode="contained" onPress={this.guardar} name="Guardar" />
+              </View>
             </View>
           </View>
-        </View>
+        </ImageBackground>
       </SideDrawer>
     )
   }

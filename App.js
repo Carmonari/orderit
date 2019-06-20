@@ -32,16 +32,16 @@ import DetalleCompra from './src/components/perfil/DetalleCompra';
 
 //Check for token
 AsyncStorage.getItem('jwtToken').then(token => {
-  setAuthToken(token);
-});
-  
+  if(token){
+    setAuthToken(token);
+    const decode = jwt_decode(token);
+    //Set user and isAunthenticated
+    store.dispatch(setCurrentUser(decode));
+  }
+});  
 //Set auth token header auth
 //Decode token and get user infand exp
-AsyncStorage.getItem('jwtToken').then(token => {
-  const decode = jwt_decode(token);
-  //Set user and isAunthenticated
-  store.dispatch(setCurrentUser(decode));
-});
+
 
 const theme = {
   ...DefaultTheme,

@@ -7,6 +7,9 @@ const styles = StyleSheet.create({
   margen15: {
     margin: 15
   },
+  margenB15:{
+    marginBottom: 15
+  },
   card: {
     width: Dimensions.get('window').width/2.35,
     height: 300

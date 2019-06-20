@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys  = require('../../config/keys');
 const passport = require('passport');
+const nodemailer = require("nodemailer");
+var smtpTransport = require('nodemailer-smtp-transport');
 
 // Load input validation
 const validateRegisterInput = require('../../validation/register');
@@ -137,6 +139,55 @@ router.post('/login', async (req, res) => {
     return console.log(err);
   }
 });
+
+// @route   Post api/users/forgot
+// @desc    forgot pass user
+// @access  Public
+router.post('/forgot', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    const email = req.body.email;
+    let errors = {};
+    //Find user by email
+    let user = await User.findOne({ email });
+    if(!user){
+      errors.email = 'Usario no encontrado';
+      return res.status(404).json(errors);
+    }
+    var randomstring = Math.random().toString(36).slice(-8);
+
+    // Gen hash password
+    let salt = await bcrypt.genSalt(10);
+    let hash = await bcrypt.hash(randomstring, salt);
+
+    let changePass = await User.findOneAndUpdate({"email": email}, {$set: {"password": hash}});
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport(smtpTransport({
+      service: 'gmail',
+      host: "smtp.gmail.email",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "wwunit19@gmail.com", // generated ethereal user
+        pass: "Camelsinfiltro" // generated ethereal password
+      }
+    }));
+
+    let info = await transporter.sendMail({
+      from: 'Fred Foo ✔ <foo@blurdybloop.com>', // sender address
+      to: email, // list of receivers
+      subject: "New pass ✔", // Subject line
+      text: "New password", // plain text body
+      html: "<b>"+randomstring+"</b>" // html body
+    })
+  
+    console.log("Message sent: %s", info.messageId);
+    res.json(changePass);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Err in the server")
+  }
+})
 
 // @route   GET api/users/profile/:id
 // @desc    Profile

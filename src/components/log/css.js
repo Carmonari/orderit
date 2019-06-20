@@ -8,6 +8,10 @@ const styles = StyleSheet.create({
       alignItems: 'stretch',
       margin: 10
   },
+  imagenFondo: {
+    width: "100%",
+    height: "100%"
+  },
   flex1: {
     flex: 1
   },

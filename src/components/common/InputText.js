@@ -2,11 +2,13 @@ import React from 'react';
 import { View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import styles from '../common/css';
 
 const InputText = ({name, label, value, disabled, multiline, onChange, placeholder, error, password, keyboardType, style}) => {
   return(
     <View style={style}>
       <TextInput
+        style={styles.fondoBlanco}
         label={label}
         value={value}
         disabled={disabled}

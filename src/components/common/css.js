@@ -6,8 +6,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F0EC',
     minHeight: Dimensions.get('window').height
   },
-  fondoGrisOxford: {
-    backgroundColor: '#828282'
+  fondoVerde: {
+    backgroundColor: '#167634'
+  },
+  fondoBlanco: {
+    backgroundColor: '#FFFFFF'
+  },
+  imagenFondo: {
+    width: "100%",
+    height: "100%"
   },
 
   // Estilos especificos
@@ -57,6 +64,12 @@ const styles = StyleSheet.create({
   //Aligns
   alginCenter: {
     alignItems: 'center'
+  },
+
+  //Button
+  fijo: {
+    position: 'relative',
+    bottom: 20,
   }
   
 });

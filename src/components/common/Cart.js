@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../common/Header';
 import { getAddress } from '../../actions/usersActions';
 import { addShopping } from '../../actions/shoppingActions';
+import Boton from '../common/Boton';
 import { connect } from 'react-redux';
 
 import PayPal from 'react-native-paypal-wrapper';
@@ -103,7 +104,9 @@ class Cart extends Component {
 
   render(){
     const subtotal = this.subtotal();
-    const total = subtotal + 100 + 100;
+    const comision = subtotal * 0.08;
+    const envio = subtotal <= 1000 ? 200 : 0; 
+    const total = subtotal + comision + envio;
     return (
       <SideDrawer >
         <Header menu={false} open={this.back} />
@@ -113,27 +116,21 @@ class Cart extends Component {
               this.renderItems()
             }
             <View style={{margin: 10}}>
-              <Text>ORDEN DE COMPRA</Text>
+              <Text style={{color: "#41CE6C"}}>ORDEN DE COMPRA</Text>
               <Divider />
               <View style={{flexDirection: 'column', alignItems: 'flex-end'}}>
                 <Text>Subtotal: ${subtotal}</Text>
-                <Text>Comisión: $100</Text>
-                <Text>Envío express: $100</Text>
-                <Text>Total: ${total}</Text>
+                <Text>Comisión: ${comision}</Text>
+                <Text>Envío express: ${envio}</Text>
+                <Text style={{color: "#000"}}>Total: ${total}</Text>
               </View>
             </View>
-            <View style={{margin: 10}}>
-              <Button style={{marginBottom: 10}} icon="date-range" mode="contained" onPress={() => this.props.history.push('/programar-envio')}>
-                Programar entrega
-              </Button>
-              <Button style={{marginBottom: 10}} icon="payment" mode="contained" onPress={() => this.checkoutPaypal()}>
-                Paypal
-              </Button>
-              <Button icon="android" mode="contained" onPress={() => console.log('Pressed')}>
-                Android pay
-              </Button>
-            </View>
           </ScrollView>
+          <View style={{margin: 10, position: 'absolute', bottom: 30, width: '95%'}}>
+            <Boton style={{marginBottom: 10}} icon="date-range" mode="contained" onClick={() => this.props.history.push('/programar-envio')} name="Programar entrega" />
+            <Boton style={{marginBottom: 10}} icon="payment" mode="contained" onClick={() => this.checkoutPaypal()} name="Paypal" />
+            <Boton icon="android" mode="contained" onClick={() => console.log('Pressed')} name="Android pay" />
+          </View>
         </View>
       </SideDrawer>
     )

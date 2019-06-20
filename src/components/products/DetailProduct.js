@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Image, Text } from 'react-native';
+import { View, Image, Text, ScrollView } from 'react-native';
 import { PropTypes } from 'prop-types';
 import SideDrawer from '../common/SideDrawer';
 import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../common/Header';
-import { Button, IconButton, Snackbar  } from 'react-native-paper';
+import { IconButton, Snackbar  } from 'react-native-paper';
+import Boton from '../common/Boton';
 import { getProduct } from '../../actions/productActions';
 import { connect } from 'react-redux';
 
@@ -65,12 +66,12 @@ class DetailProduct extends Component {
     return(
       <SideDrawer >
         <Header menu={false} open={this.back} />
-        <View>
+        <View style={{flex: 1, marginBottom: 30}}>
           <View>
             <Image resizeMode="cover" style={{width: "100%", height: 350}} source={{ uri: `http://10.0.2.2:5001/productos/${detailProduct.img}`}} />
-            <IconButton style={{position: 'absolute', bottom: 0}} icon="favorite" size={20} />
+            <IconButton style={{position: 'absolute', bottom: 0}} color="#41CE6C" icon="favorite" size={20} />
           </View>
-          <View>
+          <View style={{flex: 1}}>
             <View style={{flexDirection: 'row', margin: 15, justifyContent: 'space-between'}}>
               <View>
                 <Text style={{fontWeight: 'bold', fontSize: 18}}>{detailProduct.name}</Text>
@@ -80,30 +81,31 @@ class DetailProduct extends Component {
                 <Text style={{color: "#41CE6C", fontWeight: 'bold', fontSize: 18}}>${detailProduct.precio}</Text>
               </View>
             </View>
+            <ScrollView style={{flex: 1}}>
+              <View style={{marginLeft: 50, marginBottom: 15, marginRight: 10, flex: 1}}>
+                <Text style={{fontSize: 15}}>{detailProduct.descripcion}</Text>
+              </View>
 
-            <View style={{marginHorizontal: 15, marginBottom: 15}}>
-              <Text>{detailProduct.descripcion}</Text>
-            </View>
-
-            <View style={{flexDirection: 'row', marginHorizontal: 15, justifyContent: 'space-between'}}>
-              <View style={{flexDirection: 'row'}}>
-                <IconButton icon="remove" size={20} onPress={this.rest} />
-                <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: 30, paddingRight: 30}}>
-                  <Text>{this.state.cantidad}</Text>
+              <View style={{flex: 1, flexDirection: 'row', marginHorizontal: 15, justifyContent: 'space-between'}}>
+                <View style={{flexDirection: 'row'}}>
+                  <IconButton icon="remove" size={20} onPress={this.rest} />
+                  <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: 30, paddingRight: 30}}>
+                    <Text>{this.state.cantidad}</Text>
+                  </View>
+                  <IconButton icon="add" size={20} onPress={this.add} />
                 </View>
-                <IconButton icon="add" size={20} onPress={this.add} />
+                <View>
+                  <Boton mode="contained" onClick={() => this.agregar(detailProduct)} name="Agregar" />
+                </View>
               </View>
-              <View>
-                <Button mode="contained" onPress={() => this.agregar(detailProduct)}>
-                  Agregar
-                </Button>
-              </View>
-            </View>
+            </ScrollView>
             <Snackbar
               visible={this.state.visible}
               onDismiss={() => this.setState({ visible: false })}
               duration={3500}
-            > Se ha agregado al carrito de compras con éxito </Snackbar>
+            > 
+              Se ha agregado al carrito de compras con éxito
+            </Snackbar>
           </View>
         </View>
       </SideDrawer>

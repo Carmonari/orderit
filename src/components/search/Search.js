@@ -58,7 +58,7 @@ class Search extends Component {
         <View style={{flex: 1}}>
           <View>
             <Searchbar
-              placeholder="Search"
+              placeholder="Buscar"
               onChangeText={query => { this.buscar(query) }}
             />
           </View>

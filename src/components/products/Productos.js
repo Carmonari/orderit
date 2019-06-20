@@ -76,7 +76,7 @@ class Products extends Component {
     return (
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} />
-        <View style={styles.flex1}>
+        <View style={[styles.flex1, styles.margenB15]}>
           <FlatList
             data={products}
             numColumns="2"

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Alert } from 'react-native';
+import { View, Text, FlatList, Alert, ImageBackground } from 'react-native';
 import { PropTypes } from 'prop-types';
-import { FAB, Button, Switch } from 'react-native-paper';
+import { FAB, Button, Switch, Divider } from 'react-native-paper';
 import { Link } from 'react-router-native';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
@@ -43,54 +43,56 @@ class Facturas extends Component {
     return (
       <SideDrawer>
         <Header menu={false} open={this.back} />
-        <View style={{margin: 10, flex: 1}}>
-        <View>
-            <FlatList
-              data={infoUser.facturas}
-              extraData={this.props}
-              legacyImplementation={true}
-              keyExtractor={(item) => item._id}
-              renderItem={({item}) => (
-                <Swipeable rightButtons={[
-                  <Button 
-                    style={{flex: 1, alignItems: 'flex-start', justifyContent: 'center'}} 
-                    icon="delete-forever" mode="Outlined" onPress={() => this.eliminarBill(item._id)}>
-                    Eliminar
-                  </Button>
-                ]} rightButtonWidth={135}>
-                  <View style={{flex: 1, marginBottom: 15}}>
-                    <View>
-                      <Text style={{fontSize: 18, fontWeight: 'bold'}}>@{item.name}</Text>
-                    </View>  
-                    <Link to={`/add-facturas/${item._id}`}>                 
-                      <View style={{flex: 1, flexDirection: 'row'}}>
-                          <View style={{flex: 2}}>
-                            <Text>
-                              {item.calle} {item.numero_ext} {item.numero_int} {item.municipio} {item.colonia} {item.cp}
-                              {' '} {item.estado} {item.pais}
-                            </Text>
-                          </View>
+        <ImageBackground source={require('../../../assets/background.png')} style={[styles.imagenFondo, styles.flex1]}>
+          <View style={{margin: 10, flex: 1}}>
+            <View>
+              <FlatList
+                data={infoUser.facturas}
+                extraData={this.props}
+                legacyImplementation={true}
+                keyExtractor={(item) => item._id}
+                renderItem={({item}) => (
+                  <Swipeable rightButtons={[
+                    <Button 
+                      style={{flex: 1, alignItems: 'flex-start', justifyContent: 'center'}} 
+                      icon="delete-forever" mode="Outlined" onPress={() => this.eliminarBill(item._id)}>
+                      Eliminar
+                    </Button>
+                  ]} rightButtonWidth={135}>
+                    <View style={{flex: 1, marginBottom: 15}}>
+                      <View>
+                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>@{item.name}</Text>
+                      </View>  
+                      <Link to={`/add-facturas/${item._id}`}>                 
+                        <View style={{flex: 1, flexDirection: 'row'}}>
+                            <View style={{flex: 2}}>
+                              <Text>
+                                {item.calle} {item.numero_ext} {item.numero_int} {item.municipio} {item.colonia} {item.cp}
+                                {' '} {item.estado} {item.pais}
+                              </Text>
+                            </View>
+                        </View>
+                      </Link>
+                      <View style={{alignItems: 'flex-start', flex: 1}}>
+                        <Switch
+                          value={item.status}
+                          onValueChange={() => this.status(item._id)}
+                        />
                       </View>
-                    </Link>
-                    <View style={{alignItems: 'flex-start', flex: 1}}>
-                      <Switch
-                        value={item.status}
-                        onValueChange={() => this.status(item._id)}
-                      />
                     </View>
-                  </View>
-                </Swipeable>
-                
-              )}
+                    <Divider style={{backgroundColor: "#000", marginBottom: 10}} />
+                  </Swipeable>
+                )}
+              />
+            </View>
+            <FAB
+              style={{position: 'absolute', margin: 15, right: 0, bottom: 25, backgroundColor: "#41CE6C"}}
+              small
+              icon="add"
+              onPress={() => this.props.history.push('/add-facturas/agregar')}
             />
           </View>
-          <FAB
-            style={{position: 'absolute', margin: 15, right: 0, bottom: 25}}
-            small
-            icon="add"
-            onPress={() => this.props.history.push('/add-facturas/agregar')}
-          />
-        </View>
+        </ImageBackground>
       </SideDrawer>
     )
   }

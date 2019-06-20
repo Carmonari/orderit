@@ -59,7 +59,8 @@ class DetalleCompra extends Component {
         <View>
           <Text># {pedidos.idCompra}</Text>
           { dire }
-          <Text>{status}</Text>
+          <Text style={{textAlign: 'right'}}>{status}</Text>      
+          <Text style={{textAlign: 'right'}}>Total: ${pedidos.total}</Text>
           <Text>{fecha} {hora}</Text>
         </View>
         <ScrollView>

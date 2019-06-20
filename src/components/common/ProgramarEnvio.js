@@ -4,6 +4,7 @@ import { Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import SideDrawer from './SideDrawer';
 import Header from './Header';
+import Boton from '../common/Boton';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -49,27 +50,23 @@ export class ProgramarEnvio extends Component {
     return (
       <SideDrawer>
         <Header menu={false} open={this.back} />
-        <View>
-          <Button mode="contained" onPress={this._showDateTimePicker}>
-            Seleccionar fecha y hora de entrega
-          </Button>
-          <DateTimePicker
-            isVisible={this.state.isDateTimePickerVisible}
-            onConfirm={this._handleDatePicked}
-            onCancel={this._hideDateTimePicker}
-            mode='datetime'
-            date={fecha}
-            minimumDate={fecha}
-            maximumDate={fecha3meses}
-          />
-          <Text>{this.state.entrega}</Text>
-          <View style={{flexDirection: 'row', margin: 10}}>
-            <Button mode="contained" style={{flex: 1, margin: 5}} onPress={() => this.props.history.goBack()}>
-              Cancelar
-            </Button>
-            <Button mode="contained" style={{flex: 1, margin: 5}} onPress={() => this.guardar()}>
-              Guardar
-            </Button>
+        <View style={{flex: 1}}>
+          <View style={{margin: 15}}>
+            <Boton mode="contained" onClick={this._showDateTimePicker} name="Seleccionar fecha y hora de entrega" />
+            <DateTimePicker
+              isVisible={this.state.isDateTimePickerVisible}
+              onConfirm={this._handleDatePicked}
+              onCancel={this._hideDateTimePicker}
+              mode='datetime'
+              date={fecha}
+              minimumDate={fecha}
+              maximumDate={fecha3meses}
+            />
+            <Text>{this.state.entrega}</Text>
+          </View>
+          <View style={{flexDirection: 'row', margin: 10, position: 'absolute', bottom: 30}}>
+            <Boton mode="outline" style={{flex: 1, margin: 5}} textColor="#000" onClick={() => this.props.history.goBack()} name="Cancelar" />
+            <Boton mode="contained" style={{flex: 1, margin: 5}} onClick={() => this.guardar()} name="Guardar" />
           </View>
         </View>
       </SideDrawer>

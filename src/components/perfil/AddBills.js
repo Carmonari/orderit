@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, ImageBackground } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { Button } from 'react-native-paper';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import styles from '../common/css';
+import Boton from '../common/Boton';
 import InputText from '../common/InputText';
 import { addBills, getOneBill, editBill } from '../../actions/usersActions';
 import { connect } from 'react-redux';
@@ -91,103 +92,103 @@ class AddBills extends Component {
     return (
       <SideDrawer>
         <Header menu={false} open={this.back} />
-        <View style={{margin: 10, flex: 1}}>
-          <ScrollView>
-            <InputText
-              label="Nombre"
-              value={this.state.name}
-              name="name"
-              onChange={this.onChange}
-              placeholder="Nombre"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Tipo de persona jurídica"
-              value={this.state.tipo_persona}
-              name="tipo_persona"
-              onChange={this.onChange}
-              placeholder="física o moral"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Razón social"
-              value={this.state.razon_social}
-              name="razon_social"
-              onChange={this.onChange}
-              placeholder="Razón social"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Calle"
-              value={this.state.calle}
-              name="calle"
-              onChange={this.onChange}
-              placeholder="Calle"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Numero exterior"
-              value={this.state.numero_ext}
-              name="numero_ext"
-              onChange={this.onChange}
-              placeholder="Numero exterior"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Numero interior"
-              value={this.state.numero_int}
-              name="numero_int"
-              onChange={this.onChange}
-              placeholder="Numero interior"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="CP"
-              value={this.state.cp}
-              name="cp"
-              onChange={this.onChange}
-              placeholder="CP"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Colonia"
-              value={this.state.colonia}
-              name="colonia"
-              onChange={this.onChange}
-              placeholder="Colonia"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Municipio"
-              value={this.state.municipio}
-              name="municipio"
-              onChange={this.onChange}
-              placeholder="Municipio"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Estado"
-              value={this.state.estado}
-              name="estado"
-              onChange={this.onChange}
-              placeholder="Estado"
-              style={[styles.margenT10, styles.margenH10]}
-            />
-            <InputText
-              label="Pais"
-              value={this.state.pais}
-              name="pais"
-              onChange={this.onChange}
-              placeholder="Pais"
-              style={styles.margen10}
-            />
-            <View style={[styles.margen10, styles.margenB30]}>
-              <Button mode="contained" onPress={this.guardar}>
-                Guardar
-              </Button>
+        <ImageBackground source={require('../../../assets/background.png')} style={[styles.imagenFondo, styles.flex1]}>
+          <View style={{margin: 10, flex: 1}}>
+            <ScrollView>
+              <InputText
+                label="Nombre"
+                value={this.state.name}
+                name="name"
+                onChange={this.onChange}
+                placeholder="Nombre"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Tipo de persona jurídica"
+                value={this.state.tipo_persona}
+                name="tipo_persona"
+                onChange={this.onChange}
+                placeholder="física o moral"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Razón social"
+                value={this.state.razon_social}
+                name="razon_social"
+                onChange={this.onChange}
+                placeholder="Razón social"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Calle"
+                value={this.state.calle}
+                name="calle"
+                onChange={this.onChange}
+                placeholder="Calle"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Numero exterior"
+                value={this.state.numero_ext}
+                name="numero_ext"
+                onChange={this.onChange}
+                placeholder="Numero exterior"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Numero interior"
+                value={this.state.numero_int}
+                name="numero_int"
+                onChange={this.onChange}
+                placeholder="Numero interior"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="CP"
+                value={this.state.cp}
+                name="cp"
+                onChange={this.onChange}
+                placeholder="CP"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Colonia"
+                value={this.state.colonia}
+                name="colonia"
+                onChange={this.onChange}
+                placeholder="Colonia"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Municipio"
+                value={this.state.municipio}
+                name="municipio"
+                onChange={this.onChange}
+                placeholder="Municipio"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Estado"
+                value={this.state.estado}
+                name="estado"
+                onChange={this.onChange}
+                placeholder="Estado"
+                style={[styles.margenT10, styles.margenH10]}
+              />
+              <InputText
+                label="Pais"
+                value={this.state.pais}
+                name="pais"
+                onChange={this.onChange}
+                placeholder="Pais"
+                style={styles.margen10}
+              />
+            </ScrollView>
+            <View style={[styles.margen10, styles.fijo]}>
+              <Boton mode="contained" onPress={this.guardar} name="Guardar" />
             </View>
-          </ScrollView>
-        </View>
+          </View>
+        </ImageBackground>
       </SideDrawer>
     )
   }

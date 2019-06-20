@@ -9,7 +9,7 @@ const ControlPanel = (props) => {
   let image = isEmpty(props.infoUser.avatar) ? require('../../../assets/user.png') : ({ uri: `http://10.0.2.2:5000/${props.infoUser.avatar}` })
   return (
     <View>
-      <View style={styles.fondoGrisOxford}>
+      <View style={styles.fondoVerde}>
         <View>
           <Link to="/perfil-info" component={TouchableHighlight}>
             <View style={styles.viewImgEmail}>
@@ -62,7 +62,6 @@ const ControlPanel = (props) => {
               )
             })
           }
-          
         </List.Section>
       </View>
     </View>

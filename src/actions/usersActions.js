@@ -21,6 +21,24 @@ export const addUser = (newUser, history) => async dispatch => {
   }
 }
 
+//Forgot pass
+export const forgotPass = (email, history) => async dispatch => {
+  try {
+    dispatch(clearErrors());
+    let res = await axios.post('http://10.0.2.2:5000/api/users/forgot', email);
+    dispatch({
+      type: ADD_USER,
+      payload: res.data
+    });
+    history.push('/');
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
 //Get profile
 export const getProfile = (id) => async dispatch => {
  try {
