@@ -14,6 +14,41 @@ import PayPal from 'react-native-paypal-wrapper';
 import isEmpty from '../../validation/is-empty';
 PayPal.initialize(PayPal.SANDBOX, "AbRCF2nU4tnsR7Hgn69oUoVK3Zkar-ruPtcSi_74r4EvWLgDH8WTeyOjX15YyWpcMewXHE6r90fkncms");
 
+//Android
+import { PaymentRequest } from 'react-native-payments';
+
+const METHOD_DATA = [{
+  supportedMethods: ['android-pay'],
+  data: {
+    supportedNetworks: ['visa', 'mastercard', 'amex'],
+    currencyCode: 'USD',
+    environment: 'TEST', // defaults to production
+    paymentMethodTokenizationParameters: {
+      tokenizationType: 'Direct',
+      parameters: {
+        protocolVersion: 'ECv1',
+        publicKey: 'BIf3kxX3/0wKiJt/x7dyxajA/17pHfkOAnoKum77BvFYVE3LwbWDiGgjLTtE7CyDaT64dtzGXnfS+YbIxvcVITE=',
+      },
+    },
+  },
+}];
+
+const DETAILS = {
+  id: 'basic-example',
+  displayItems: [
+    {
+      label: 'Movie Ticket',
+      amount: { currency: 'USD', value: '15.00' }
+    }
+  ],
+  total: {
+    label: 'Merchant Name',
+    amount: { currency: 'USD', value: '15.00' }
+  }
+};
+
+const paymentRequest = new PaymentRequest(METHOD_DATA, DETAILS);
+
 class Cart extends Component {
   constructor(props){
     super(props);
@@ -129,7 +164,7 @@ class Cart extends Component {
           <View style={{margin: 10, position: 'absolute', bottom: 30, width: '95%'}}>
             <Boton style={{marginBottom: 10}} icon="date-range" mode="contained" onClick={() => this.props.history.push('/programar-envio')} name="Programar entrega" />
             <Boton style={{marginBottom: 10}} icon="payment" mode="contained" onClick={() => this.checkoutPaypal()} name="Paypal" />
-            <Boton icon="android" mode="contained" onClick={() => console.log('Pressed')} name="Android pay" />
+            <Boton icon="android" mode="contained" onClick={() => this.checkoutAndroid()} name="Android pay" />
           </View>
         </View>
       </SideDrawer>
@@ -195,6 +230,15 @@ class Cart extends Component {
       ],
       { cancelable: false }
     )
+  }
+
+  checkoutAndroid() {
+    paymentRequest.show().then((response) => {
+      console.warn(response)
+    }).catch((err) => {
+      console.warn(err);
+    })
+    //Actions.checkout({cartItems: this.state.cartItems});
   }
 }
 

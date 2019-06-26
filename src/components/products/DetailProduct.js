@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { View, Image, Text, ScrollView } from 'react-native';
+import { View, Image, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { PropTypes } from 'prop-types';
 import SideDrawer from '../common/SideDrawer';
+import { AirbnbRating } from 'react-native-ratings';
 import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../common/Header';
 import { IconButton, Snackbar  } from 'react-native-paper';
 import Boton from '../common/Boton';
-import { getProduct } from '../../actions/productActions';
+import isEmpty from '../../validation/is-empty';
+import { getProduct, productRating, addLike, unLike } from '../../actions/productActions';
 import { connect } from 'react-redux';
 
 class DetailProduct extends Component {
@@ -20,6 +22,14 @@ class DetailProduct extends Component {
 
   componentDidMount(){
     this.props.getProduct(this.props.match.params.idProduct);
+  }
+
+  ratingCompleted = (rating) => {
+    const rait = {
+      rating
+    }
+    
+    this.props.productRating(this.props.match.params.idProduct, rait);
   }
 
   back = () => {
@@ -60,8 +70,52 @@ class DetailProduct extends Component {
     }
   }
 
+  addLike = () => {
+    this.props.addLike(this.props.match.params.idProduct);
+  }
+
+  unLike = () => {
+    this.props.unLike(this.props.match.params.idProduct);
+  }
+
+  findUserLike = (likes) => {
+    const { auth } = this.props;
+    if (likes.filter(like => like.user === auth.user.id).length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  findUserRating = (raiting) => {
+    const { auth } = this.props;
+    if(raiting.filter(rait => rait.user === auth.user.id).length > 0){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   render(){
     const { detailProduct } = this.props.product;
+    const { user } = this.props.auth
+    let icono, index;
+    let rat = 0;
+
+    if(!isEmpty(detailProduct)){
+      icono = this.findUserLike(detailProduct.likes) ? (
+        <TouchableOpacity onPress={() => this.unLike()} style={{position: 'absolute', bottom: 0}} >
+          <IconButton size={20} icon='favorite' color="#41CE6C" />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity onPress={() => this.addLike()} style={{position: 'absolute', bottom: 0}} >
+          <IconButton size={20} icon='favorite-border' />
+        </TouchableOpacity>
+      );
+      
+      index = detailProduct.raiting.findIndex(rait => rait.user.toString() === user.id);
+      rat = index > -1 ? detailProduct.raiting[index].rait : 0
+    }
 
     return(
       <SideDrawer >
@@ -69,7 +123,18 @@ class DetailProduct extends Component {
         <View style={{flex: 1, marginBottom: 30}}>
           <View>
             <Image resizeMode="cover" style={{width: "100%", height: 350}} source={{ uri: `http://10.0.2.2:5001/productos/${detailProduct.img}`}} />
-            <IconButton style={{position: 'absolute', bottom: 0}} color="#41CE6C" icon="favorite" size={20} />
+            {
+              icono
+            }
+            <View style={{ paddingVertical: 10, position: 'absolute', bottom: 0, right: 15 }}>
+              <AirbnbRating
+                defaultRating={rat}
+                showRating={false}
+                size={25}
+                selectedColor="#41CE6C"
+                onFinishRating={this.ratingCompleted}
+              />
+            </View>
           </View>
           <View style={{flex: 1}}>
             <View style={{flexDirection: 'row', margin: 15, justifyContent: 'space-between'}}>
@@ -82,23 +147,23 @@ class DetailProduct extends Component {
               </View>
             </View>
             <ScrollView style={{flex: 1}}>
-              <View style={{marginLeft: 50, marginBottom: 15, marginRight: 10, flex: 1}}>
+              <View style={{marginLeft: 50, marginBottom: 50, marginRight: 10, flex: 1}}>
                 <Text style={{fontSize: 15}}>{detailProduct.descripcion}</Text>
               </View>
-
-              <View style={{flex: 1, flexDirection: 'row', marginHorizontal: 15, justifyContent: 'space-between'}}>
-                <View style={{flexDirection: 'row'}}>
-                  <IconButton icon="remove" size={20} onPress={this.rest} />
-                  <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: 30, paddingRight: 30}}>
-                    <Text>{this.state.cantidad}</Text>
-                  </View>
-                  <IconButton icon="add" size={20} onPress={this.add} />
-                </View>
-                <View>
-                  <Boton mode="contained" onClick={() => this.agregar(detailProduct)} name="Agregar" />
-                </View>
-              </View>
             </ScrollView>
+            <View style={{flex: 1, flexDirection: 'row', marginHorizontal: 15, justifyContent: 'space-between',
+                         position: 'absolute', bottom: 0, backgroundColor: '#F3F0EC'}}>
+              <View style={{flex: 1, flexDirection: 'row'}}>
+                <IconButton icon="remove" size={20} onPress={this.rest} />
+                <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: 30, paddingRight: 30}}>
+                  <Text>{this.state.cantidad}</Text>
+                </View>
+                <IconButton icon="add" size={20} onPress={this.add} />
+              </View>
+              <View>
+                <Boton mode="contained" onClick={() => this.agregar(detailProduct)} name="Agregar" />
+              </View>
+            </View>
             <Snackbar
               visible={this.state.visible}
               onDismiss={() => this.setState({ visible: false })}
@@ -114,11 +179,16 @@ class DetailProduct extends Component {
 }
 
 DetailProduct.propTypes = {
-  getProduct: PropTypes.func.isRequired
+  getProduct: PropTypes.func.isRequired,
+  addLike: PropTypes.func.isRequired,
+  unLike: PropTypes.func.isRequired,
+  productRating: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-  product: state.product
+  product: state.product,
+  auth: state.auth
 })
 
-export default connect(mapStateToProps, { getProduct })(DetailProduct);
+export default connect(mapStateToProps, { getProduct, productRating, addLike, unLike })(DetailProduct);

@@ -143,7 +143,7 @@ router.post('/login', async (req, res) => {
 // @route   Post api/users/forgot
 // @desc    forgot pass user
 // @access  Public
-router.post('/forgot', passport.authenticate('jwt', { session: false}), async (req, res) => {
+router.post('/forgot', async (req, res) => {
   try {
     const email = req.body.email;
     let errors = {};

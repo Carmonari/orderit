@@ -5,7 +5,8 @@ import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import { getFav, addLike, unLike } from '../../actions/productActions';
 import Product from '../products/Product';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import styles from '../products/css';
 
 class Favorites extends Component {
   constructor(props){
@@ -26,11 +27,11 @@ class Favorites extends Component {
   }
 
   addLike = (id) => {
-    this.props.addLike(id);
+    this.props.addLike(id, "fav");
   }
 
   unLike = (id) => {
-    this.props.unLike(id);
+    this.props.unLike(id, "fav");
   }
 
   findUserLike = (likes) => {
@@ -49,7 +50,7 @@ class Favorites extends Component {
     return (
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} />
-        <View>
+        <View style={[styles.flex1, styles.margenB15]}>
           <FlatList
             data={products}
             numColumns="2"

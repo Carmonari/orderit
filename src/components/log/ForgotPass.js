@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Dimensions, Image, ImageBackground } from 'react-native';
-import { Button } from 'react-native-paper';
 import { Link } from 'react-router-native';
 import InputText from '../common/InputText';
 import Boton from '../common/Boton';
@@ -10,7 +10,16 @@ import { connect } from 'react-redux';
 
 class ForgotPass extends Component {
   state = {
-    email: ''
+    email: '',
+    errors: {}
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.errors){
+        this.setState({
+            errors: nextProps.errors
+        })
+    }
   }
 
   onChange = (name, value) => {
@@ -19,17 +28,18 @@ class ForgotPass extends Component {
     })
   }
 
-  forgot = () => {
+  forgot = event => {
     const forgot = {
       email: this.state.email
     }
-
+    
     this.props.forgotPass(forgot, this.props.history);
   }
 
   render(){
     const dimensions = Dimensions.get('window');
     const imgWidth = dimensions.width;
+    const { errors } = this.state;
 
   return(
     <ImageBackground source={require('../../../assets/background.png')} style={styles.imagenFondo}>
@@ -40,11 +50,11 @@ class ForgotPass extends Component {
         <View style={styles.flex1}>
           <InputText
               name='email'
-              label='Email'
+              label={errors.email ? errors.email : 'Email'}
               value={this.state.email}
               onChange={this.onChange}
               placeholder="Email"
-              error={false}
+              error={errors.email && true}
           />
           <Boton style={styles.marginV} mode="contained" name="Enviar" onClick={this.forgot} />
           <Link to="/" >
@@ -57,4 +67,13 @@ class ForgotPass extends Component {
   }
 }
 
-export default connect(null, { forgotPass })(ForgotPass);
+ForgotPass.propTypes = {
+  forgotPass: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => ({
+  errors: state.errors
+})
+
+export default connect(mapStateToProps, { forgotPass })(ForgotPass);

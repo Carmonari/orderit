@@ -61,6 +61,17 @@ const ProductSchema = new Schema({
       }
     }
   ],
+  raiting: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
+      },
+      rait: {
+        type: Number
+      }
+    }
+  ],
   date: {
     type: Date,
     default: Date.now

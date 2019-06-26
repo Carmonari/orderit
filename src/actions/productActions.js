@@ -69,6 +69,19 @@ export const getProduct = (idProduct) => async (dispatch) => {
   }
 }
 
+//Products raiting
+export const productRating = (id, rating) => async (dispatch) => {
+  try {
+    await axios.patch(`http://10.0.2.2:5000/api/products/raiting/${id}`, rating);
+
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
 //Products Like(favorite)
 export const addLike = (id, HomeSection, idHome) => async (dispatch) => {
   try {
@@ -78,8 +91,10 @@ export const addLike = (id, HomeSection, idHome) => async (dispatch) => {
       await dispatch(getProductsForHome(idHome));
     } else if(HomeSection === 'seccion') {
       await dispatch(getProductsForSection(idHome));
-    } else {
+    } else if(HomeSection === 'fav') {
       await dispatch(getFav())
+    } else {
+      await dispatch(getProduct(id))
     }
   } catch (err) {
     dispatch({
@@ -97,8 +112,10 @@ export const unLike = (id, HomeSection, idHome) => async (dispatch) => {
       await dispatch(getProductsForHome(idHome));
     } else if(HomeSection === 'seccion') {
       await dispatch(getProductsForSection(idHome));
-    } else {
+    } else if(HomeSection === 'fav') {
       await dispatch(getFav())
+    } else {
+      await dispatch(getProduct(id))
     }
   } catch (err) {
     dispatch({

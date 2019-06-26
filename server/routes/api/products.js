@@ -111,6 +111,31 @@ router.put('/unlike/:id', passport.authenticate('jwt', { session: false}), async
   }
 });
 
+// @route   PATCH api/products/raiting/:id
+// @desc    Like a product
+// @access  Private
+router.patch('/raiting/:id', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    const product = await Products.findById(req.params.id);
+    const index = await product.raiting.findIndex(rait => rait.user.toString() === req.user.id);
+
+    // Check if the product has already been liked
+    if(product.raiting.filter(rait => rait.user.toString() === req.user.id).length > 0){
+      product.raiting[index].rait = req.body.rating;
+    }
+    else{
+      product.raiting.unshift({ user: req.user.id, rait: req.body.rating });
+    }
+
+    await product.save();
+
+    res.json(product.raiting);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 // @route   GET api/products/like
 // @desc    get user likes
 // @access  Private

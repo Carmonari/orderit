@@ -1,4 +1,4 @@
-import { ADD_USER, GET_PROFILE, EDIT_PROFILE, ADD_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ONE_ADDRESS,
+import { ADD_USER, GET_PROFILE, EDIT_PROFILE, ADD_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ONE_ADDRESS, FORGOT_USER,
         ADD_BILL, GET_BILLS, DELETE_BILL, GET_ONE_BILL, GET_ADDRESS } from '../actions/types';
 
 const initialState = {
@@ -11,6 +11,7 @@ export default function(state = initialState, action){
   switch(action.type){
     case ADD_USER:
     case ADD_ADDRESS:
+    case FORGOT_USER:
       return {
         ...state
       }

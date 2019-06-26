@@ -138,6 +138,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-payments')
     implementation project(':react-native-paypal-wrapper')
     implementation project(':react-native-image-picker')
     implementation project(':@react-native-community_async-storage')

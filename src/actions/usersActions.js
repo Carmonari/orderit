@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ADD_USER, GET_PROFILE, ADD_ADDRESS, GET_ADDRESS, DELETE_ADDRESS, UPDATE_STATUS, GET_ONE_ADDRESS,
-        ADD_BILL, GET_BILLS, DELETE_BILL, GET_ONE_BILL, GET_ERRORS, CLEAR_ERRORS } from './types';
+        ADD_BILL, GET_BILLS, DELETE_BILL, GET_ONE_BILL, GET_ERRORS, FORGOT_USER, CLEAR_ERRORS } from './types';
 
 //Add user
 export const addUser = (newUser, history) => async dispatch => {
@@ -22,12 +22,12 @@ export const addUser = (newUser, history) => async dispatch => {
 }
 
 //Forgot pass
-export const forgotPass = (email, history) => async dispatch => {
+export const forgotPass = (forgot, history) => async dispatch => {
   try {
     dispatch(clearErrors());
-    let res = await axios.post('http://10.0.2.2:5000/api/users/forgot', email);
+    let res = await axios.post('http://10.0.2.2:5000/api/users/forgot', forgot);
     dispatch({
-      type: ADD_USER,
+      type: FORGOT_USER,
       payload: res.data
     });
     history.push('/');
