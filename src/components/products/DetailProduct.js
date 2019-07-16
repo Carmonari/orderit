@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Image, Text, ScrollView, TouchableOpacity, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
 import SideDrawer from '../common/SideDrawer';
 import { AirbnbRating } from 'react-native-ratings';
@@ -22,6 +22,7 @@ class DetailProduct extends Component {
 
   componentDidMount(){
     this.props.getProduct(this.props.match.params.idProduct);
+    BackHandler.addEventListener('hardwareBackPress', this.back);
   }
 
   ratingCompleted = (rating) => {
@@ -32,8 +33,13 @@ class DetailProduct extends Component {
     this.props.productRating(this.props.match.params.idProduct, rait);
   }
 
-  back = () => {
-    this.props.history.goBack();
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
+  }
+
+  back = async () => {
+    await this.props.history.goBack();
+    return true;
   }
 
   rest = () => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, ImageBackground, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { Divider } from 'react-native-paper';
 import Header from '../common/Header';
@@ -13,10 +13,16 @@ import { connect } from 'react-redux';
 class Pedidos extends Component {
   componentDidMount(){
     this.props.getShopping();
+    BackHandler.addEventListener('hardwareBackPress', this.back);
   }
 
-  back = () => {
-    this.props.history.goBack();
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
+  }
+
+  back = async () => {
+    await this.props.history.goBack();
+    return true;
   }
 
   pedidos = () => {

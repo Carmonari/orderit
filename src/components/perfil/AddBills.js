@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, ScrollView, ImageBackground } from 'react-native';
+import { View, ScrollView, ImageBackground, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
-import { Button } from 'react-native-paper';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import styles from '../common/css';
@@ -33,6 +32,7 @@ class AddBills extends Component {
     if(this.state.update){
       this.props.getOneBill(this.props.match.params.idBill)
     }
+    BackHandler.addEventListener('hardwareBackPress', this.back);
   }
 
   componentWillReceiveProps(nextProps){
@@ -54,8 +54,13 @@ class AddBills extends Component {
     }
   }
   
-  back = () => {
-    this.props.history.goBack();
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
+  }
+
+  back = async () => {
+    await this.props.history.goBack();
+    return true;
   }
 
   onChange = (name, value) => {

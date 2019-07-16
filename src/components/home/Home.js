@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { Link } from 'react-router-native';
 import Header from '../common/Header';
@@ -21,6 +21,16 @@ class Home extends Component {
     this.props.getHomes();
     this.props.getSections();
     this.props.getProfile(user.id);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    this.props.history.goBack(); // works best when the goBack is async
+    return true;
   }
   
   openClose = () => {

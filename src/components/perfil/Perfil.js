@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableHighlight, ImageBackground } from 'react-native';
+import { View, TouchableHighlight, ImageBackground, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { Avatar, Button } from 'react-native-paper';
 import Header from '../common/Header';
@@ -38,10 +38,17 @@ class Perfil extends Component {
       cel,
       avatar: { uri: `http://10.0.2.2:5000/${avatar}` }
     })
+
+    BackHandler.addEventListener('hardwareBackPress', this.back);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
   }
   
-  back = () => {
-    this.props.history.goBack();
+  back = async () => {
+    await this.props.history.goBack();
+    return true;
   }
 
   onChange = (name, value) => {

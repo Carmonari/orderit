@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, View, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
@@ -29,6 +29,16 @@ class Products extends Component {
       homeSeccion: this.props.match.params.homeSeccion,
       idHome: this.props.match.params.idHome
     })
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    this.props.history.goBack(); // works best when the goBack is async
+    return true;
   }
 
   componentWillReceiveProps(nextProps){    

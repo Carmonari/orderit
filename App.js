@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen'
 import store from './store';
 
-import { setCurrentUser, logoutUser } from './src/actions/authActions';
+import { setCurrentUser } from './src/actions/authActions';
 import PrivateRoute from './src/components/common/PrivateRoute';
 import setAuthToken from './src/utils/setAuthToken';
 import Login from './src/components/log/Login';
@@ -27,7 +27,7 @@ import Facturas from './src/components/perfil/Facturas';
 import AddBills from './src/components/perfil/AddBills';
 import Search from './src/components/search/Search';
 import Pedidos from './src/components/perfil/Pedidos';
-import { ProgramarEnvio } from './src/components/common/ProgramarEnvio';
+import ProgramarEnvio  from './src/components/common/ProgramarEnvio';
 import DetalleCompra from './src/components/perfil/DetalleCompra';
 
 //Check for token
@@ -53,9 +53,9 @@ const theme = {
   }
 };
 
-export default class App extends Component {
+class App extends Component {
 
-  componentDidMount() {
+  componentDidMount(){
     SplashScreen.hide();
   }
 
@@ -91,3 +91,5 @@ export default class App extends Component {
     );
   }
 }
+
+export default App;

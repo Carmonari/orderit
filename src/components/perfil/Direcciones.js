@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Image, Alert, ImageBackground } from 'react-native';
+import { View, Text, FlatList, Image, Alert, ImageBackground, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { FAB, Button, Switch, Divider } from 'react-native-paper';
 import { Link } from 'react-router-native';
@@ -13,10 +13,16 @@ import { connect } from 'react-redux';
 class Direcciones extends Component {
   componentDidMount(){
     this.props.getAddress();
+    BackHandler.addEventListener('hardwareBackPress', this.back);
   }
   
-  back = () => {
-    this.props.history.goBack();
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
+  }
+
+  back = async () => {
+    await this.props.history.goBack();
+    return true;
   }
 
   onChange = (name, value) => {

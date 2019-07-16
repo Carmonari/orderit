@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, FlatList } from 'react-native'
+import { View, FlatList, BackHandler } from 'react-native'
 import PropTypes from 'prop-types'
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
@@ -18,6 +18,16 @@ class Favorites extends Component {
 
   componentDidMount(){
     this.props.getFav();
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    this.props.history.goBack(); // works best when the goBack is async
+    return true;
   }
 
   openClose = () => {

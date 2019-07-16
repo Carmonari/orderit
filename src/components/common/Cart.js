@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { View, Image, Text, ScrollView, Alert } from 'react-native';
-import { List, IconButton, Button, Divider } from 'react-native-paper';
+import { View, Image, Text, ScrollView, Alert, BackHandler } from 'react-native';
+import { List, IconButton, Divider } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import SideDrawer from '../common/SideDrawer';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -68,10 +68,21 @@ class Cart extends Component {
       if (!res) this.setState({entrega: []});
       else this.setState({entrega: JSON.parse(res)});
     });
+    BackHandler.addEventListener('hardwareBackPress', this.back);
   }
 
-  back = () => {
-    this.props.history.goBack();
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
+  }
+
+  handleBackPress = () => {
+    this.goBack(); // works best when the goBack is async
+    return true;
+  }
+
+  back = async () => {
+    await this.props.history.goBack();
+    return true;
   }
 
   removeItemPressed = (item) => {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, ImageBackground } from 'react-native';
+import { View, ImageBackground, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
-import { Button } from 'react-native-paper';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import styles from '../common/css';
@@ -27,8 +26,17 @@ class AddDire extends Component {
     }
   }
   
-  back = () => {
-    this.props.history.goBack();
+  componentDidMount(){
+    BackHandler.addEventListener('hardwareBackPress', this.back);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
+  }
+
+  back = async () => {
+    await this.props.history.goBack();
+    return true;
   }
 
   onChange = (name, value) => {

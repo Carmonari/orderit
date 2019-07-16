@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, Text, BackHandler } from 'react-native';
 import PropTypes from 'prop-types';
 import SideDrawer from './SideDrawer';
 import Header from './Header';
@@ -8,7 +7,7 @@ import Boton from '../common/Boton';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 
-export class ProgramarEnvio extends Component {
+class ProgramarEnvio extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,8 +16,17 @@ export class ProgramarEnvio extends Component {
     }
   }
 
-  back = () => {
-    this.props.history.goBack();
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.back);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
+  }
+
+  back = async () => {
+    await this.props.history.goBack();
+    return true;
   }
 
   _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });

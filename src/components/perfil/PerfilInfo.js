@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, ImageBackground } from 'react-native';
+import { View, ScrollView, ImageBackground, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { Avatar, List } from 'react-native-paper';
 import Header from '../common/Header';
@@ -23,6 +23,16 @@ class PerfilInfo extends Component {
     const { infoUser } = this.props.user;
 
     this.setState({ avatar: { uri: `http://10.0.2.2:5000/${infoUser.avatar}`}})
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    this.props.history.goBack(); // works best when the goBack is async
+    return true;
   }
 
   componentWillReceiveProps(nextProps){

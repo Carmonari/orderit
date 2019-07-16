@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, BackHandler } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Header from '../common/Header';
@@ -14,6 +14,19 @@ class Search extends Component {
     this.state = {
       open: false
     }
+  }
+
+  componentDidMount(){
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    this.props.history.goBack(); // works best when the goBack is async
+    return true;
   }
 
   openClose = () => {
