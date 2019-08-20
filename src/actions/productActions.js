@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { GET_ERRORS, GET_PRODUCTS_HOME, GET_PRODUCTS_SECTION, GET_PRODUCT, GET_PRODUCTS_FAV, GET_PRODUCTS_SEARCH } from './types';
+import { GET_ERRORS, GET_PRODUCTS_HOME, GET_PRODUCTS_SECTION, GET_PRODUCT, GET_PRODUCTS_FAV, GET_PRODUCTS_SEARCH,
+         GET_RATING } from './types';
 
 //Products - get product for home
 export const getProductsForHome = (idHome) => async (dispatch) => {
@@ -70,7 +71,23 @@ export const getProduct = (idProduct) => async (dispatch) => {
 }
 
 //Products raiting
-export const productRating = (id, rating) => async (dispatch) => {
+export const productRating = (id) => async (dispatch) => {
+  try {
+    let res = await axios.get(`http://10.0.2.2:5000/api/products/raiting/${id}`);
+    dispatch({
+      type: GET_RATING,
+      payload: res.data[0]
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+}
+
+//Products raiting
+export const addProductRating = (id, rating) => async (dispatch) => {
   try {
     await axios.patch(`http://10.0.2.2:5000/api/products/raiting/${id}`, rating);
 

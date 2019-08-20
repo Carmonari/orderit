@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableHighlight, Image } from 'react-native';
+import { View, Text, TouchableHighlight, Image, ScrollView } from 'react-native';
 import { Link } from 'react-router-native';
 import { List, Avatar } from 'react-native-paper';
 import styles from './css';
@@ -8,7 +8,7 @@ import isEmpty from '../../validation/is-empty';
 const ControlPanel = (props) => {
   let image = isEmpty(props.infoUser.avatar) ? require('../../../assets/user.png') : ({ uri: `http://10.0.2.2:5000/${props.infoUser.avatar}` })
   return (
-    <View>
+    <View style={{flex: 1}}>
       <View style={styles.fondoVerde}>
         <View>
           <Link to="/perfil-info" component={TouchableHighlight}>
@@ -22,7 +22,8 @@ const ControlPanel = (props) => {
           <Text style={styles.colorBlanco}>{props.infoUser.email}</Text>
         </View>
       </View>
-      <View style={{backgroundColor: '#41CE6C'}}>
+      <View style={{backgroundColor: '#41CE6C', flex: 1, flexDirection: 'row', zIndex: -100}}>
+          <ScrollView style={{overflow:'visible', flex: 1}}>
         <List.Section>
           <List.Item
             title="Home"
@@ -52,7 +53,7 @@ const ControlPanel = (props) => {
                         key={v._id}
                         title={v.name}
                         titleStyle={styles.colorBlanco}
-                        left={props => <Image resizeMode="contain" style={{width: 30}} source={{uri: `http://10.0.2.2:5001/secciones/${v.img}`}} />}
+                        left={props => <Image resizeMode="contain" style={{width: 30}} source={{uri: `http://orderit.mx/secciones/${v.img}`}} />}
                         onPress={() => props.history.push(`/products/seccion/${v.name}`)}
                       />
                     )
@@ -63,6 +64,7 @@ const ControlPanel = (props) => {
             })
           }
         </List.Section>
+          </ScrollView>
       </View>
     </View>
   )

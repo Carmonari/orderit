@@ -5,13 +5,15 @@ const styles = StyleSheet.create({
     flex: 1
   },
   margen15: {
-    margin: 15
+    marginRight: 10,
+    marginTop: 10
   },
   margenB15:{
-    marginBottom: 15
+    marginBottom: 30,
+    marginLeft: 10
   },
   card: {
-    width: Dimensions.get('window').width/2.35,
+    width: Dimensions.get('window').width/2.15,
     height: 300
   }
 });

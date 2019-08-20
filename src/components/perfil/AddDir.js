@@ -151,7 +151,7 @@ class AddDire extends Component {
               />
             </View>
             <View style={{zIndex: 0, position: 'absolute', bottom: 30, width: '100%'}}>
-              <Boton style={{zIndex: 0}} mode="contained" onPress={this.guardar} name="Guardar" />
+              <Boton style={{zIndex: 0}} mode="contained" onClick={this.guardar} name="Guardar" />
             </View>
           </View>
         </ImageBackground>

@@ -1,9 +1,11 @@
 import isEmpty from '../validation/is-empty';
-import { GET_PRODUCTS_HOME, GET_PRODUCTS_SECTION, GET_PRODUCT, GET_PRODUCTS_FAV, GET_PRODUCTS_SEARCH } from '../actions/types';
+import { GET_PRODUCTS_HOME, GET_PRODUCTS_SECTION, GET_PRODUCT, GET_PRODUCTS_FAV, GET_PRODUCTS_SEARCH,
+         GET_RATING } from '../actions/types';
 
 const initialState = {
   products: [],
-  detailProduct: {}
+  detailProduct: {},
+  rating: {}
 }
 
 export default function(state = initialState, action){
@@ -15,6 +17,11 @@ export default function(state = initialState, action){
       return {
         ...state,
         products: action.payload
+      }
+    case GET_RATING:
+      return {
+        ...state,
+        rating: action.payload
       }
     case GET_PRODUCT:
       return {

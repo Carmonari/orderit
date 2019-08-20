@@ -23,14 +23,7 @@ class DetailProduct extends Component {
   componentDidMount(){
     this.props.getProduct(this.props.match.params.idProduct);
     BackHandler.addEventListener('hardwareBackPress', this.back);
-  }
-
-  ratingCompleted = (rating) => {
-    const rait = {
-      rating
-    }
-    
-    this.props.productRating(this.props.match.params.idProduct, rait);
+    this.props.productRating(this.props.match.params.idProduct);
   }
 
   componentWillUnmount() {
@@ -104,9 +97,7 @@ class DetailProduct extends Component {
 
   render(){
     const { detailProduct } = this.props.product;
-    const { user } = this.props.auth
-    let icono, index;
-    let rat = 0;
+    let icono;
 
     if(!isEmpty(detailProduct)){
       icono = this.findUserLike(detailProduct.likes) ? (
@@ -118,9 +109,6 @@ class DetailProduct extends Component {
           <IconButton size={20} icon='favorite-border' />
         </TouchableOpacity>
       );
-      
-      index = detailProduct.raiting.findIndex(rait => rait.user.toString() === user.id);
-      rat = index > -1 ? detailProduct.raiting[index].rait : 0
     }
 
     return(
@@ -128,17 +116,17 @@ class DetailProduct extends Component {
         <Header menu={false} open={this.back} />
         <View style={{flex: 1, marginBottom: 30}}>
           <View>
-            <Image resizeMode="cover" style={{width: "100%", height: 350}} source={{ uri: `http://10.0.2.2:5001/productos/${detailProduct.img}`}} />
+            <Image resizeMode="cover" style={{width: "100%", height: 350}} source={{ uri: `http://orderit.mx/productos/${detailProduct.img}`}} />
             {
               icono
             }
             <View style={{ paddingVertical: 10, position: 'absolute', bottom: 0, right: 15 }}>
               <AirbnbRating
-                defaultRating={rat}
+                defaultRating={this.props.product.rating.avgRaiting}
                 showRating={false}
                 size={25}
                 selectedColor="#41CE6C"
-                onFinishRating={this.ratingCompleted}
+                isDisabled={true}
               />
             </View>
           </View>

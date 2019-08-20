@@ -1,8 +1,8 @@
-import isEmpty from '../validation/is-empty';
-import { ADD_SHOPPING, GET_SHOPPING } from '../actions/types';
+import { ADD_SHOPPING, GET_SHOPPING, GET_RATING_USER } from '../actions/types';
 
 const initialState = {
-  pedidos: []
+  pedidos: [],
+  rating: []
 }
 
 export default function(state = initialState, action){

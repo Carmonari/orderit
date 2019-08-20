@@ -10,7 +10,7 @@ const Homes = require('../../models/Homes');
 // @access  Private
 router.get('/', passport.authenticate('jwt', { session: false}), async (req, res) => {
   try{
-    let homes = await Homes.find().sort({ date: -1});
+    let homes = await Homes.find().sort({ orden: 'asc'});
     res.json(homes);
   }
   catch(err){

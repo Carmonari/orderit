@@ -1,9 +1,23 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, TouchableHighlight } from 'react-native';
-import { Card, Paragraph, IconButton, Divider  } from 'react-native-paper';
+import { Card, IconButton, Divider  } from 'react-native-paper';
 import styles from './css';
 
 const Product = (props) => {
+  let unidad;
+  switch(props.unidad){
+    case "Peso" :
+      unidad = "Kg";
+      break;
+    case "Litros":
+      unidad = "L";
+      break;
+    case "Pieza":
+      unidad = "pza";
+      break
+    default:
+      unidad = props.unidad;
+  }
   const filtro = props.sections.filter(res => res.name == props.seccion && res.descuento > props.descuento);
   const icono = props.findUserLike(props.likes) ? (
     <TouchableOpacity onPress={() => props.unLike(props._id)} >
@@ -18,7 +32,7 @@ const Product = (props) => {
     <View style={styles.margen15}>
       <Card style={styles.card} >
         <TouchableHighlight onPress={() => props.history.push(`/detail-product/${props._id}`)}>
-          <Card.Cover source={{ uri: `http://10.0.2.2:5001/productos/${props.img}`}} />
+          <Card.Cover source={{ uri: `http://orderit.mx/productos/${props.img}`}} />
         </TouchableHighlight>
         <Card.Title
           title={props.name}
@@ -27,14 +41,14 @@ const Product = (props) => {
         <Divider />
         <Card.Content>
           <View style={{flexDirection: 'row'}}>
-            <Text style={{flex: 1}}>${props.precio} {props.unidad}</Text>
             {
               typeof(filtro["0"]) === "object" ? 
-              (<Text style={{color: 'red'}}> -{filtro["0"].descuento}%</Text>) : (
+              (<Text style={{color: 'red', flex: 1}}> -{filtro["0"].descuento}%</Text>) : (
                 props.descuento &&
-                (<Text style={{color: 'red'}}> -{props.descuento}%</Text>)
+                (<Text style={{color: 'red', flex: 1}}> -{props.descuento}%</Text>)
               )
             }
+            <Text style={{textAlign: 'right', flex: 2}}>${props.precio} {unidad}</Text>
           </View>
         </Card.Content>
       </Card>

@@ -9,6 +9,9 @@ const homes = require('./routes/api/homes');
 const sections = require('./routes/api/sections');
 const products = require('./routes/api/products');
 
+var remotedev = require('remotedev-server');
+remotedev({ hostname: 'localhost', port: 8000 });
+
 const app = express();
 
 app.use(cors())

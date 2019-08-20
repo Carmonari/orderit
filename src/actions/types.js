@@ -24,3 +24,5 @@ export const GET_ONE_BILL = 'GET_ONE_BILL';
 export const GET_PRODUCTS_SEARCH = 'GET_PRODUCTS_SEARCH';
 export const ADD_SHOPPING = 'ADD_SHOPPING';
 export const GET_SHOPPING = 'GET_SHOPPING';
+export const GET_RATING = 'GET_RATING';
+export const GET_RATING_USER = 'GET_RATING_USER';

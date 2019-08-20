@@ -123,7 +123,7 @@ class Cart extends Component {
               }
             left={
               props => (
-              <Image resizeMode='contain' {...props} style={{width: 100, height: 100}} source={{ uri: `http://10.0.2.2:5001/productos/${item.img}`}} />)
+              <Image resizeMode='contain' {...props} style={{width: 100, height: 100}} source={{ uri: `http://orderit.mx/productos/${item.img}`}} />)
             }
             right={props => <IconButton size={30} icon="remove-circle-outline" onPress={() => this.removeItemPressed(item)} />}
           />
@@ -149,10 +149,11 @@ class Cart extends Component {
   }
 
   render(){
-    const subtotal = this.subtotal();
-    const comision = subtotal * 0.08;
+    const subtotal = this.subtotal().toFixed(2);
+    let comision = (subtotal * 0.08).toFixed(2);
     const envio = subtotal <= 1000 ? 200 : 0; 
-    const total = subtotal + comision + envio;
+    let total = subtotal + comision + envio;
+    total = parseFloat(total).toFixed(2);
     return (
       <SideDrawer >
         <Header menu={false} open={this.back} />
@@ -186,61 +187,77 @@ class Cart extends Component {
     const { infoUser } = this.props.user
     let total = 0.0;
     let cart = [];
-    let getIndex = infoUser.direcciones.map(dire => dire.status.toString()).indexOf('true');
-    let indice = getIndex !== -1 ? getIndex : 0;
-    Alert.alert(
-      'Nombre de la dirección que se enviará: a ',
-      infoUser.direcciones[indice].name,
-      [
-        {text: 'Cambiar dirección', onPress: () => this.props.history.push('/direcciones')},
-        {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'Aceptar', onPress: () => {
-          this.state.cartItems.map((item, i) => {
-            let totalP = 0.0;
-            totalP = parseFloat(item.precio) * parseFloat(item.quantity);
-            total = total + totalP;
-            cart.push({
-              product: item._id,
-              name: item.name,
-              img: item.img,
-              cantidad: item.quantity,
-              precio: item.precio
-            })
-          });
-          PayPal.pay({
-            price: `${total}`,
-            currency: 'MXN',
-            description: "Costo total",
-          }).then(confirm => {
-            console.warn(JSON.stringify(confirm))
-            let fechaEntrega = isEmpty(this.state.entrega) ? '' : this.state.entrega;
-             if(confirm.response.state == 'approved'){
-               const newPedido = {
-                idCompra: confirm.response.id,
-                total: total,
-                cart,
-                direccion: [{
-                  name: infoUser.direcciones[indice].name,
-                  calle: infoUser.direcciones[indice].calle,
-                  numero_ext: infoUser.direcciones[indice].numero_ext,
-                  numero_int: infoUser.direcciones[indice].numero_int,
-                  colonia: infoUser.direcciones[indice].colonia,
-                  municipio: infoUser.direcciones[indice].municipio,
-                  estado: infoUser.direcciones[indice].estado,
-                  pais: infoUser.direcciones[indice].pais,
-                  cp: infoUser.direcciones[indice].cp
-                }],
-                entrega: fechaEntrega
+    if(infoUser.direcciones.length > 0){
+      let getIndex = infoUser.direcciones.map(dire => dire.status.toString()).indexOf('true');
+      let indice = getIndex !== -1 ? getIndex : 0;
+      Alert.alert(
+        'Nombre de la dirección que se enviará: a ',
+        infoUser.direcciones[indice].name,
+        [
+          {text: 'Cambiar dirección', onPress: () => this.props.history.push('/direcciones')},
+          {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'Aceptar', onPress: () => {
+            this.state.cartItems.map((item, i) => {
+              let totalP = 0.0;
+              totalP = parseFloat(item.precio) * parseFloat(item.quantity);
+              total = total + totalP;
+              cart.push({
+                product: item._id,
+                name: item.name,
+                img: item.img,
+                cantidad: item.quantity,
+                precio: item.precio
+              })
+            });
+            PayPal.pay({
+              price: `${total}`,
+              currency: 'MXN',
+              description: "Costo total",
+            }).then(confirm => {
+              console.warn(JSON.stringify(confirm))
+              let fechaEntrega = isEmpty(this.state.entrega) ? '' : this.state.entrega;
+               if(confirm.response.state == 'approved'){
+                 const newPedido = {
+                  idCompra: confirm.response.id,
+                  total: total,
+                  cart,
+                  direccion: [{
+                    name: infoUser.direcciones[indice].name,
+                    calle: infoUser.direcciones[indice].calle,
+                    numero_ext: infoUser.direcciones[indice].numero_ext,
+                    numero_int: infoUser.direcciones[indice].numero_int,
+                    colonia: infoUser.direcciones[indice].colonia,
+                    municipio: infoUser.direcciones[indice].municipio,
+                    estado: infoUser.direcciones[indice].estado,
+                    pais: infoUser.direcciones[indice].pais,
+                    cp: infoUser.direcciones[indice].cp
+                  }],
+                  entrega: fechaEntrega
+                 }
+                 this.props.addShopping(newPedido);
+                 this.props.history.push('/home');
+                 this.removeAll()
                }
-               this.props.addShopping(newPedido);
-               this.props.history.push('/home');
-               this.removeAll()
-             }
-          }).catch(error => console.log(error));
-        }},
-      ],
-      { cancelable: false }
-    )
+            }).catch(error => console.log(error));
+          }},
+        ],
+        { cancelable: false }
+      )
+    } else{
+      Alert.alert(
+        'Sin dirección de envio',
+        'Debe de agregar una dirección',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'Agregar dirección', onPress: () => this.props.history.push('/add-direccion')},
+        ],
+        {cancelable: false},
+      );
+    }
   }
 
   checkoutAndroid() {

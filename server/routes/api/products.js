@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 //Load user model
 const Products = require('../../models/Products');
 const Pedidos = require('../../models/Pedidos');
@@ -136,6 +137,53 @@ router.patch('/raiting/:id', passport.authenticate('jwt', { session: false}), as
   }
 });
 
+// @route   GET api/products/raiting/:id
+// @desc    Get raiting of product
+// @access  Private
+router.get('/raiting/:id', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    const product = await Products.aggregate([
+      {
+        $match:  { _id: ObjectId(req.params.id)}
+      },
+      {
+        $unwind: "$raiting"
+      },
+      {
+        $group: {
+        _id: null,
+        avgRaiting: { $avg: "$raiting.rait" }
+      }
+    }]);
+
+    res.json(product);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+// @route   GET api/products/raiting/:id
+// @desc    Get raiting of product
+// @access  Private
+router.get('/raiting/user/:id', passport.authenticate('jwt', { session: false}), async (req, res) => {
+  try {
+    let rat;
+    let product = await Products.findOne({ "_id": ObjectId(req.params.id), "raiting.user": { $in: [ ObjectId(req.user.id)]}},
+                  ['raiting.user','raiting.rait'])
+    await product.raiting.map(async (item) => {
+      if(item.user == req.user.id){
+        rat = item.rait;
+        return rat
+      }
+    })
+    res.json(rat);
+  } catch (err) {
+    console.error(err);
+    res.json(0);
+  }
+});
+
 // @route   GET api/products/like
 // @desc    get user likes
 // @access  Private
@@ -185,7 +233,7 @@ router.get('/pedidos', passport.authenticate('jwt', { session: false}), async (r
   }
 });
 
-// @route   GET api/products/pedido:idCompra
+// @route   GET api/products/pedido/:idCompra
 // @desc    get pedidos
 // @access  Private
 router.get('/pedidos/:idCompra', passport.authenticate('jwt', { session: false}), async (req, res) => {

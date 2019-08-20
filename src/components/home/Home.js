@@ -58,7 +58,7 @@ class Home extends Component {
     return (
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} />
-        <ScrollView>
+        <ScrollView style={{flex: 1}}>
           {
             homesList
           }
