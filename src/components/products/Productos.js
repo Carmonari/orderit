@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { FlatList, View, BackHandler } from 'react-native';
+import { FlatList, View, BackHandler, Text } from 'react-native';
+import { Snackbar } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
@@ -14,7 +15,8 @@ class Products extends Component {
     this.state = {
       open: false,
       homeSeccion: '',
-      idHome: ''
+      idHome: '',
+      visible: false
     }
   }
 
@@ -64,6 +66,7 @@ class Products extends Component {
 
   addLike = (id) => {
     this.props.addLike(id, this.state.homeSeccion, this.state.idHome);
+    this.setState({ visible: true })
   }
 
   unLike = (id) => {
@@ -85,8 +88,11 @@ class Products extends Component {
 
     return (
       <SideDrawer open={this.state.open}>
-        <Header menu={true} open={this.openClose} />
+        <Header menu={true} open={this.openClose} carro={this.props.numberItems} />
         <View style={[styles.flex1, styles.margenB15]}>
+          <View style={{backgroundColor: '#41CE6C', marginRight: 10}}>
+            <Text style={{color: "#FFF", margin: 5, fontSize: 12}}>Programa el día y la hora de tu entrega los domingos son: GRATIS</Text>
+          </View>
           <FlatList
             data={products}
             numColumns="2"
@@ -94,6 +100,14 @@ class Products extends Component {
                                       history={this.props.history} sections={sections} /> }
             keyExtractor={(item) => item._id}
           />
+          <Snackbar
+            style={{backgroundColor: '#41CE6C', position: 'absolute', bottom: 0}}
+            visible={this.state.visible}
+            onDismiss={() => this.setState({ visible: false })}
+            duration={3500}
+          > 
+            Se ha agregado a Favoritos
+          </Snackbar>
         </View>
       </SideDrawer>
     )

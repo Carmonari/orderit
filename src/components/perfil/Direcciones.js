@@ -54,7 +54,7 @@ class Direcciones extends Component {
 
     return (
       <SideDrawer>
-        <Header menu={false} open={this.back} />
+        <Header menu={false} open={this.back} carro={this.props.numberItems} />
         <ImageBackground source={require('../../../assets/background.png')} style={[styles.imagenFondo, styles.flex1]}>
           <View style={{margin: 10, flex: 1}}>
             <View>

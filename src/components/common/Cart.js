@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { View, Image, Text, ScrollView, Alert, BackHandler } from 'react-native';
+import { View, Image, Text, ScrollView, Alert, BackHandler, Dimensions } from 'react-native';
+import { Redirect } from 'react-router-native'; 
 import { List, IconButton, Divider } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import SideDrawer from '../common/SideDrawer';
@@ -104,6 +105,7 @@ class Cart extends Component {
     });
     this.setState({cartItems: items});
     AsyncStorage.setItem("CART", JSON.stringify(items));
+    this.props.addItem()
   }
 
   renderItems() {
@@ -118,7 +120,7 @@ class Cart extends Component {
             description={
               <Text>
                 {item.tipo} {"\n"}
-                <Text style={{fontSize: 18, fontWeight: 'bold', color: '#41ce6c'}}>${item.precio} x {item.quantity} = ${total}</Text>
+                <Text style={{fontSize: 18, fontWeight: 'bold', color: '#41ce6c'}}>${item.precio} x {item.quantity} = ${total.toFixed(2)}</Text>
               </Text>
               }
             left={
@@ -146,6 +148,25 @@ class Cart extends Component {
     this.setState({cartItems: [], entrega: []})
     AsyncStorage.setItem("CART",JSON.stringify([]));
     AsyncStorage.setItem("ENTREGA",JSON.stringify([]));
+    this.props.addItem()
+  }
+
+  alerta = (idCompra) => {
+    Alert.alert(
+      'Se ha ejecutado la compra con éxito ',
+      'Ir a: ',
+      [
+        {
+          text: 'Home',
+          onPress: () => this.props.history.push('/home')
+        },
+        {
+          text: 'Mi compra',
+          onPress: () => this.props.history.push(`/detalle-compra/${idCompra}`)
+        },
+      ],
+      {cancelable: false},
+    );
   }
 
   render(){
@@ -156,13 +177,13 @@ class Cart extends Component {
     total = parseFloat(total).toFixed(2);
     return (
       <SideDrawer >
-        <Header menu={false} open={this.back} />
-        <View style={{flex: 1, paddingBottom: 30}}>
-          <ScrollView>
+        <Header menu={false} open={this.back} carro={this.props.numberItems} />
+        <View style={{flex: 1, paddingBottom: 30, backgroundColor: '#FFF'}}>
+          <ScrollView style={{marginBottom: 150}}>
             {
               this.renderItems()
             }
-            <View style={{margin: 10}}>
+            <View style={{flex: 1, margin: 10}}>
               <Text style={{color: "#41CE6C"}}>ORDEN DE COMPRA</Text>
               <Divider />
               <View style={{flexDirection: 'column', alignItems: 'flex-end'}}>
@@ -174,9 +195,9 @@ class Cart extends Component {
             </View>
           </ScrollView>
           <View style={{margin: 10, position: 'absolute', bottom: 30, width: '95%'}}>
-            <Boton style={{marginBottom: 10}} icon="date-range" mode="contained" onClick={() => this.props.history.push('/programar-envio')} name="Programar entrega" />
-            <Boton style={{marginBottom: 10}} icon="payment" mode="contained" onClick={() => this.checkoutPaypal()} name="Paypal" />
-            <Boton icon="android" mode="contained" onClick={() => this.checkoutAndroid()} name="Android pay" />
+            <Boton style={{marginBottom: 10, borderRadius: 15}} icon="date-range" mode="contained" onClick={() => this.props.history.push('/programar-envio')} name="Programar entrega" />
+            <Boton style={{marginBottom: 10, borderRadius: 15}} icon="payment" mode="contained" onClick={() => this.checkoutPaypal()} name="Paypal" />
+            <Boton style={{borderRadius: 15}} icon="android" mode="contained" onClick={() => this.checkoutAndroid()} name="Android pay" />
           </View>
         </View>
       </SideDrawer>
@@ -235,8 +256,8 @@ class Cart extends Component {
                   entrega: fechaEntrega
                  }
                  this.props.addShopping(newPedido);
-                 this.props.history.push('/home');
                  this.removeAll()
+                 this.alerta(confirm.response.id);
                }
             }).catch(error => console.log(error));
           }},

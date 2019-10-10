@@ -66,7 +66,7 @@ class AddDire extends Component {
   render() {
     return (
       <SideDrawer>
-        <Header menu={false} open={this.back} />
+        <Header menu={false} open={this.back} carro={this.props.numberItems} />
         <ImageBackground source={require('../../../assets/background.png')} style={[styles.imagenFondo, styles.flex1]}>
           <View style={{margin: 10, flex: 1}}>
             <View style={{height: 50, marginBottom: 10}}>
@@ -151,7 +151,7 @@ class AddDire extends Component {
               />
             </View>
             <View style={{zIndex: 0, position: 'absolute', bottom: 30, width: '100%'}}>
-              <Boton style={{zIndex: 0}} mode="contained" onClick={this.guardar} name="Guardar" />
+              <Boton style={{zIndex: 0, marginBottom: 10, borderRadius: 15}} mode="contained" onClick={this.guardar} name="Guardar" />
             </View>
           </View>
         </ImageBackground>

@@ -96,7 +96,7 @@ class AddBills extends Component {
   render() {
     return (
       <SideDrawer>
-        <Header menu={false} open={this.back} />
+        <Header menu={false} open={this.back} carro={this.props.numberItems} />
         <ImageBackground source={require('../../../assets/background.png')} style={[styles.imagenFondo, styles.flex1]}>
           <View style={{margin: 10, flex: 1}}>
             <ScrollView>
@@ -190,7 +190,7 @@ class AddBills extends Component {
               />
             </ScrollView>
             <View style={[styles.margen10, styles.fijo]}>
-              <Boton mode="contained" onPress={this.guardar} name="Guardar" />
+              <Boton style={{marginBottom: 10, borderRadius: 15}}  mode="contained" onPress={this.guardar} name="Guardar" />
             </View>
           </View>
         </ImageBackground>

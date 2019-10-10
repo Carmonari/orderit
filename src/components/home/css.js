@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   subtitle: {
     textAlign: 'center',
     color: '#fdfdfd',
-    fontSize: 16,
+    fontSize: 21,
     fontWeight: '100',
     fontStyle: 'italic'
   },

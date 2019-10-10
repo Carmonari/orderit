@@ -4,10 +4,9 @@ import { PropTypes } from 'prop-types';
 import { AirbnbRating } from 'react-native-ratings';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
-import styles from '../common/css';
 import isEmpty from '../../validation/is-empty';
 import axios from 'axios';
-import { getOneShopping, userRating } from '../../actions/shoppingActions';
+import { getOneShopping } from '../../actions/shoppingActions';
 import { addProductRating } from '../../actions/productActions';
 import { connect } from 'react-redux';
 
@@ -31,7 +30,6 @@ class DetalleCompra extends Component {
       let activado = nextProps.pedido.pedidos.status;
       nextProps.pedido.pedidos.cart.map(async (item) => {
       let res = await axios.get(`http://10.0.2.2:5000/api/products/raiting/user/${item.product}`);
-      console.log(res)
       let rating = activado ? res.data : 0;
         rat.push(rating);
         this.setState({
@@ -121,7 +119,7 @@ class DetalleCompra extends Component {
   render() {
     return (
       <SideDrawer>
-        <Header menu={false} open={this.back} />
+        <Header menu={false} open={this.back} carro={this.props.numberItems}/>
         <View style={{margin: 10, flex: 1}}>
           <View>
             {

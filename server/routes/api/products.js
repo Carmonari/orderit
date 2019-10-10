@@ -225,7 +225,7 @@ router.post('/pedidos', passport.authenticate('jwt', { session: false}), async (
 // @access  Private
 router.get('/pedidos', passport.authenticate('jwt', { session: false}), async (req, res) => {
   try {
-    let pedidos = await Pedidos.find({'user': req.user.id});
+    let pedidos = await Pedidos.find({'user': req.user.id}).sort({date: -1});
     res.json(pedidos);
   } catch (err) {
     console.error(err);
@@ -233,12 +233,12 @@ router.get('/pedidos', passport.authenticate('jwt', { session: false}), async (r
   }
 });
 
-// @route   GET api/products/pedido/:idCompra
+// @route   GET api/products/pedidos/:idCompra
 // @desc    get pedidos
 // @access  Private
 router.get('/pedidos/:idCompra', passport.authenticate('jwt', { session: false}), async (req, res) => {
   try {
-    let pedidos = await Pedidos.findById(req.params.idCompra);
+    let pedidos = await Pedidos.findOne({'idCompra': req.params.idCompra});
     res.json(pedidos);
   } catch (err) {
     console.error(err);

@@ -57,10 +57,10 @@ class ProgramarEnvio extends Component {
 
     return (
       <SideDrawer>
-        <Header menu={false} open={this.back} />
+        <Header menu={false} open={this.back} carro={this.props.numberItems}/>
         <View style={{flex: 1}}>
           <View style={{margin: 15}}>
-            <Boton mode="contained" onClick={this._showDateTimePicker} name="Seleccionar fecha y hora de entrega" />
+            <Boton style={{borderRadius: 15}} mode="contained" onClick={this._showDateTimePicker} name="Seleccionar fecha y hora de entrega" />
             <DateTimePicker
               isVisible={this.state.isDateTimePickerVisible}
               onConfirm={this._handleDatePicked}
@@ -73,8 +73,8 @@ class ProgramarEnvio extends Component {
             <Text>{this.state.entrega}</Text>
           </View>
           <View style={{flexDirection: 'row', margin: 10, position: 'absolute', bottom: 30}}>
-            <Boton mode="outline" style={{flex: 1, margin: 5}} textColor="#000" onClick={() => this.props.history.goBack()} name="Cancelar" />
-            <Boton mode="contained" style={{flex: 1, margin: 5}} onClick={() => this.guardar()} name="Guardar" />
+            <Boton mode="outline" style={{flex: 1, margin: 5, borderRadius: 15}} textColor="#000" onClick={() => this.props.history.goBack()} name="Cancelar" />
+            <Boton mode="contained" style={{flex: 1, margin: 5, borderRadius: 15}} onClick={() => this.guardar()} name="Guardar" />
           </View>
         </View>
       </SideDrawer>

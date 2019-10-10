@@ -118,7 +118,7 @@ class Perfil extends Component {
     let image = isEmpty(this.state.avatar) ? require('../../../assets/user.png') : this.state.avatar
     return (
       <SideDrawer>
-        <Header menu={false} open={this.back} />
+        <Header menu={false} open={this.back} carro={this.props.numberItems} />
         <ImageBackground source={require('../../../assets/background.png')} style={styles.imagenFondo}>
           <View style={styles.flex1}>
             <View style={[styles.alginCenter, styles.margenT20]}>
@@ -169,7 +169,7 @@ class Perfil extends Component {
                 style={styles.margen10}
               />
               <View style={styles.margen10}>
-                <Boton mode="contained" onPress={this.guardar} name="Guardar" />
+                <Boton style={{marginBottom: 10, borderRadius: 15}} mode="contained" onPress={this.guardar} name="Guardar" />
               </View>
             </View>
           </View>

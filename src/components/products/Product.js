@@ -21,11 +21,11 @@ const Product = (props) => {
   const filtro = props.sections.filter(res => res.name == props.seccion && res.descuento > props.descuento);
   const icono = props.findUserLike(props.likes) ? (
     <TouchableOpacity onPress={() => props.unLike(props._id)} >
-      <IconButton size={20} icon='favorite' color="#41CE6C" />
+      <IconButton size={27} icon='favorite' color="#41CE6C" />
     </TouchableOpacity>
   ) : (
     <TouchableOpacity onPress={() => props.addLike(props._id)} >
-      <IconButton size={20} icon='favorite-border' />
+      <IconButton size={27} icon='favorite-border' />
     </TouchableOpacity>
   );
   return(
@@ -39,7 +39,7 @@ const Product = (props) => {
           left={() => icono}
         />
         <Divider />
-        <Card.Content>
+        <Card.Content style={{marginTop: 5}}>
           <View style={{flexDirection: 'row'}}>
             {
               typeof(filtro["0"]) === "object" ? 

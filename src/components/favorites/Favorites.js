@@ -59,7 +59,7 @@ class Favorites extends Component {
 
     return (
       <SideDrawer open={this.state.open}>
-        <Header menu={true} open={this.openClose} />
+        <Header menu={true} open={this.openClose} carro={this.props.numberItems} />
         <View style={[styles.flex1, styles.margenB15]}>
           <FlatList
             data={products}

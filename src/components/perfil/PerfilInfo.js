@@ -50,7 +50,7 @@ class PerfilInfo extends Component {
     let image = isEmpty(this.state.avatar) ? require('../../../assets/user.png') : this.state.avatar
     return (
       <SideDrawer open={this.state.open}>
-        <Header menu={true} open={this.openClose} />
+        <Header menu={true} open={this.openClose} carro={this.props.numberItems} />
         <ImageBackground source={require('../../../assets/background.png')} style={styles.imagenFondo}>
           <View style={{flex: 1}}>
             <View style={{alignItems: 'center', marginTop: 20}}>

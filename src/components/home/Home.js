@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
-import { Link } from 'react-router-native';
+import { Link, withRouter } from 'react-router-native';
 import Header from '../common/Header';
 import HomeLayout from './HomesLayout';
 import SideDrawer from '../common/SideDrawer';
@@ -11,8 +11,11 @@ import { getProfile } from '../../actions/usersActions';
 import { connect } from 'react-redux';
 
 class Home extends Component {
-  state = {
-    open: false
+  constructor(props){
+    super(props);
+    this.state = {
+      open: false
+    }
   }
 
   componentDidMount(){
@@ -22,6 +25,7 @@ class Home extends Component {
     this.props.getSections();
     this.props.getProfile(user.id);
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  
   }
 
   componentWillUnmount() {
@@ -57,7 +61,7 @@ class Home extends Component {
     }
     return (
       <SideDrawer open={this.state.open}>
-        <Header menu={true} open={this.openClose} />
+        <Header menu={true} open={this.openClose} carro={this.props.numberItems} />
         <ScrollView style={{flex: 1}}>
           {
             homesList
@@ -81,4 +85,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 })
 
-export default connect(mapStateToProps, { getHomes, getSections, getProfile })(Home);
+export default withRouter(connect(mapStateToProps, { getHomes, getSections, getProfile })(Home));

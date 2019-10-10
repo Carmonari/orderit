@@ -38,7 +38,7 @@ class Pedidos extends Component {
             <Text>ORDERIT: {item.idCompra}</Text>
             <Text>Enviado a: @{item.direccion[0].name}</Text>
             <Text style={{textAlign: 'right'}}>Total: ${item.total}</Text>
-            <Boton mode="contained" onClick={() => this.props.history.push(`/detalle-compra/${item._id}`)} name="Detalles" />
+            <Boton style={{marginBottom: 10, borderRadius: 15}}  mode="contained" onClick={() => this.props.history.push(`/detalle-compra/${item.idCompra}`)} name="Detalles" />
             <Divider style={{backgroundColor: '#FFF', marginVertical: 15}} />
           </View>
         )
@@ -51,7 +51,7 @@ class Pedidos extends Component {
   render() {
     return (
       <SideDrawer>
-        <Header menu={false} open={this.back} />
+        <Header menu={false} open={this.back} carro={this.props.numberItems} />
         <ImageBackground source={require('../../../assets/background.png')} style={[styles.imagenFondo, styles.flex1]}>
           <View style={{margin: 10, flex: 1}}>
             <ScrollView>

@@ -63,6 +63,7 @@ class DetailProduct extends Component {
         await AsyncStorage.setItem('CART', JSON.stringify(items))
       }
       this.setState({visible: true});
+      this.props.addItem()
       
     } catch (err) {
       console.error(err)
@@ -86,49 +87,32 @@ class DetailProduct extends Component {
     }
   }
 
-  findUserRating = (raiting) => {
-    const { auth } = this.props;
-    if(raiting.filter(rait => rait.user === auth.user.id).length > 0){
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   render(){
     const { detailProduct } = this.props.product;
     let icono;
+    let rait = this.props.product.rating ? this.props.product.rating.avgRaiting : 0;
 
     if(!isEmpty(detailProduct)){
       icono = this.findUserLike(detailProduct.likes) ? (
         <TouchableOpacity onPress={() => this.unLike()} style={{position: 'absolute', bottom: 0}} >
-          <IconButton size={20} icon='favorite' color="#41CE6C" />
+          <IconButton size={30} icon='favorite' color="#41CE6C" />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity onPress={() => this.addLike()} style={{position: 'absolute', bottom: 0}} >
-          <IconButton size={20} icon='favorite-border' />
+          <IconButton size={30} icon='favorite-border' />
         </TouchableOpacity>
       );
     }
 
     return(
-      <SideDrawer >
-        <Header menu={false} open={this.back} />
+      <SideDrawer>
+        <Header menu={false} open={this.back} carro={this.props.numberItems} />
         <View style={{flex: 1, marginBottom: 30}}>
           <View>
             <Image resizeMode="cover" style={{width: "100%", height: 350}} source={{ uri: `http://orderit.mx/productos/${detailProduct.img}`}} />
             {
               icono
             }
-            <View style={{ paddingVertical: 10, position: 'absolute', bottom: 0, right: 15 }}>
-              <AirbnbRating
-                defaultRating={this.props.product.rating.avgRaiting}
-                showRating={false}
-                size={25}
-                selectedColor="#41CE6C"
-                isDisabled={true}
-              />
-            </View>
           </View>
           <View style={{flex: 1}}>
             <View style={{flexDirection: 'row', margin: 15, justifyContent: 'space-between'}}>
@@ -146,19 +130,29 @@ class DetailProduct extends Component {
               </View>
             </ScrollView>
             <View style={{flex: 1, flexDirection: 'row', marginHorizontal: 15, justifyContent: 'space-between',
-                         position: 'absolute', bottom: 0, backgroundColor: '#F3F0EC'}}>
+                         position: 'absolute', bottom: 25, backgroundColor: '#F3F0EC'}}>
               <View style={{flex: 1, flexDirection: 'row'}}>
-                <IconButton icon="remove" size={20} onPress={this.rest} />
+                <IconButton icon="remove" size={27} onPress={this.rest} />
                 <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: 30, paddingRight: 30}}>
-                  <Text>{this.state.cantidad}</Text>
+                  <Text style={{fontSize: 21}}>{this.state.cantidad}</Text>
                 </View>
-                <IconButton icon="add" size={20} onPress={this.add} />
+                <IconButton icon="add" size={27} onPress={this.add} />
               </View>
               <View>
-                <Boton mode="contained" onClick={() => this.agregar(detailProduct)} name="Agregar" />
+                <Boton style={{borderRadius: 15}} mode="contained" onClick={() => this.agregar(detailProduct)} name="Agregar" />
               </View>
             </View>
+            <View style={{position: 'absolute', bottom: 0, right: 0, paddingRight: 15 }}>
+                <AirbnbRating
+                  defaultRating={rait}
+                  showRating={false}
+                  size={18}
+                  selectedColor="#41CE6C"
+                  isDisabled={true}
+                />
+              </View>
             <Snackbar
+              style={{backgroundColor: '#41CE6C'}}
               visible={this.state.visible}
               onDismiss={() => this.setState({ visible: false })}
               duration={3500}
