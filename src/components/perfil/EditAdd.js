@@ -22,7 +22,9 @@ class EditAdd extends Component {
       colonia: '',
       municipio: '',
       estado: '',
-      pais: ''
+      pais: '',
+      place_id: '',
+      direComplete: ''
     }
   }
 

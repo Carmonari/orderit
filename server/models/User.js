@@ -63,6 +63,13 @@ const UserSchema = new Schema({
       status: {
         type: Boolean,
         default: false
+      },
+      direComplete: {
+        type: String
+      },
+      place_id: {
+        type: String,
+        require: true
       }
     }
   ],

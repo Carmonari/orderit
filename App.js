@@ -29,18 +29,19 @@ import Search from './src/components/search/Search';
 import Pedidos from './src/components/perfil/Pedidos';
 import ProgramarEnvio  from './src/components/common/ProgramarEnvio';
 import DetalleCompra from './src/components/perfil/DetalleCompra';
+import Tracking from './src/components/common/Tracking';
 
 //Check for token
 AsyncStorage.getItem('jwtToken').then(token => {
   if(token){
     setAuthToken(token);
     const decode = jwt_decode(token);
-    //Set user and isAunthenticated
+    //Set user and isAuthenticated
     store.dispatch(setCurrentUser(decode));
   }
 });  
 //Set auth token header auth
-//Decode token and get user infand exp
+//Decode token and get user inf and exp
 
 
 const theme = {
@@ -66,13 +67,13 @@ class App extends Component {
   sumItem = () => {
     AsyncStorage.getItem('CART', (err, res) => {
       let json = JSON.parse(res);
-      let numberItems = Object.keys(json).length;
-      this.setState({numItem: numberItems})
+      if(json){
+        let numberItems = Object.keys(json).length;
+        this.setState({numItem: numberItems})
+      }
     })
   }
 
-    
-  
   render() {
     return (
       <Provider store={store}>
@@ -98,6 +99,7 @@ class App extends Component {
               <PrivateRoute exact path="/cart" component={Cart} numberItems={this.state.numItem} addItem={this.sumItem} />
               <PrivateRoute exact path="/programar-envio" component={ProgramarEnvio} numberItems={this.state.numItem} />
               <PrivateRoute exact path="/search" component={Search} numberItems={this.state.numItem} />
+              <PrivateRoute exact path="/tracking" component={Tracking} />
             </Switch>
           </Router>
         </PaperProvider>

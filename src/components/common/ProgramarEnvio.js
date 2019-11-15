@@ -18,6 +18,10 @@ class ProgramarEnvio extends Component {
 
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.back);
+    AsyncStorage.getItem("ENTREGA", (err, res) => {
+      if (!res) this.setState({entrega: []});
+      else this.setState({entrega: JSON.parse(res)});
+    });
   }
 
   componentWillUnmount() {
@@ -40,6 +44,11 @@ class ProgramarEnvio extends Component {
       entrega: newDate
     })
   };
+
+  eliminar = () => {
+    AsyncStorage.setItem("ENTREGA",JSON.stringify([]));
+    this.setState({entrega: []});
+  }
 
   guardar = () => {
     var entrega = this.state.entrega;
@@ -73,7 +82,12 @@ class ProgramarEnvio extends Component {
             <Text>{this.state.entrega}</Text>
           </View>
           <View style={{flexDirection: 'row', margin: 10, position: 'absolute', bottom: 30}}>
-            <Boton mode="outline" style={{flex: 1, margin: 5, borderRadius: 15}} textColor="#000" onClick={() => this.props.history.goBack()} name="Cancelar" />
+            <Boton mode="outline" style={{
+                flex: 1, margin: 5, borderRadius: 15
+              }} textColor="#000" onClick={() => this.props.history.goBack()} name="Cancelar" />
+            <Boton mode="contained" style={{
+                flex: 1, margin: 5, borderRadius: 15, backgroundColor: 'red'
+              }} onClick={() => this.eliminar()} name="Eliminar" />
             <Boton mode="contained" style={{flex: 1, margin: 5, borderRadius: 15}} onClick={() => this.guardar()} name="Guardar" />
           </View>
         </View>

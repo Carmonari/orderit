@@ -22,7 +22,9 @@ class AddDire extends Component {
       colonia: '',
       municipio: '',
       estado: '',
-      pais: ''
+      pais: '',
+      place_id: '',
+      direComplete: ''
     }
   }
   
@@ -46,7 +48,7 @@ class AddDire extends Component {
   }
 
   guardar = () => {
-    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais } = this.state;
+    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais, place_id, direComplete } = this.state;
 
     const newAddress = {
       name,
@@ -57,7 +59,9 @@ class AddDire extends Component {
       colonia,
       municipio,
       estado,
-      pais
+      pais,
+      place_id,
+      direComplete
     }
 
     this.props.addAddress(newAddress, this.props.history);
@@ -80,8 +84,10 @@ class AddDire extends Component {
                 fetchDetails={true}
                 renderDescription={row => row.description} // custom description render
                 onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                  this.onChange('place_id', details.place_id);
+                  let dir = [];
                   details.address_components.map(item => {
-                    console.log(item);
+                    dir.push(item.long_name)
                     if(item.types[0] === 'street_number'){
                       this.onChange("numero_ext", item.long_name)
                     } else if(item.types[0] === 'route'){
@@ -98,6 +104,7 @@ class AddDire extends Component {
                       this.onChange("cp", item.long_name)
                     }
                   })
+                  this.onChange('direComplete', dir.join(", "));
                 }}
 
                 listViewDisplayed={false}

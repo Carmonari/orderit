@@ -2,6 +2,7 @@ package com.orderit;
 
 import android.app.Application;
 
+import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.react.ReactApplication;
 import com.reactnativepayments.ReactNativePaymentsPackage;
 import com.taessina.paypal.RNPaypalWrapperPackage;
@@ -34,7 +35,8 @@ public class MainApplication extends Application implements ReactApplication {
             new ImagePickerPackage(),
             new AsyncStoragePackage(),
           new SplashScreenReactPackage(),
-          new VectorIconsPackage()
+          new VectorIconsPackage(),
+              new MapsPackage()
       );
     }
 

@@ -61,6 +61,8 @@
 		7FB388B6F92F47C4AD094489 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6011D2A08F7D453B8B99BEA2 /* libRNImagePicker.a */; };
 		47B4B48310984E8A99455A48 /* libRNPaypalWrapper.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D5759B57CDF4B86BF158D07 /* libRNPaypalWrapper.a */; };
 		8337A348326B472B83298552 /* libReactNativePayments.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D8A3CF189945B4AF122ACD /* libReactNativePayments.a */; };
+		8AE8A5E1A0DF4752A93F221D /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A12A03FF19DC410199B23AD1 /* libAirMaps.a */; };
+		D6E171CB772142FEBBA78668 /* libRCTBackgroundGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A39E196954CD4ACA80042AD1 /* libRCTBackgroundGeolocation.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -396,6 +398,10 @@
 		9D5759B57CDF4B86BF158D07 /* libRNPaypalWrapper.a */ = {isa = PBXFileReference; name = "libRNPaypalWrapper.a"; path = "libRNPaypalWrapper.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		96CE533ED80348FF9F2270D5 /* ReactNativePayments.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativePayments.xcodeproj"; path = "../node_modules/react-native-payments/lib/ios/ReactNativePayments.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		D4D8A3CF189945B4AF122ACD /* libReactNativePayments.a */ = {isa = PBXFileReference; name = "libReactNativePayments.a"; path = "libReactNativePayments.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		76B02C7869EC4161AFED6DA8 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; name = "AirMaps.xcodeproj"; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		A12A03FF19DC410199B23AD1 /* libAirMaps.a */ = {isa = PBXFileReference; name = "libAirMaps.a"; path = "libAirMaps.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		8E285DA83EBB4842839D0C74 /* RCTBackgroundGeolocation.xcodeproj */ = {isa = PBXFileReference; name = "RCTBackgroundGeolocation.xcodeproj"; path = "../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		A39E196954CD4ACA80042AD1 /* libRCTBackgroundGeolocation.a */ = {isa = PBXFileReference; name = "libRCTBackgroundGeolocation.a"; path = "libRCTBackgroundGeolocation.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -430,6 +436,8 @@
 				7FB388B6F92F47C4AD094489 /* libRNImagePicker.a in Frameworks */,
 				47B4B48310984E8A99455A48 /* libRNPaypalWrapper.a in Frameworks */,
 				8337A348326B472B83298552 /* libReactNativePayments.a in Frameworks */,
+				8AE8A5E1A0DF4752A93F221D /* libAirMaps.a in Frameworks */,
+				D6E171CB772142FEBBA78668 /* libRCTBackgroundGeolocation.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,6 +634,8 @@
 				A31C8790349D494089962557 /* RNImagePicker.xcodeproj */,
 				CBF19CDDEDE942199D16C300 /* RNPaypalWrapper.xcodeproj */,
 				96CE533ED80348FF9F2270D5 /* ReactNativePayments.xcodeproj */,
+				76B02C7869EC4161AFED6DA8 /* AirMaps.xcodeproj */,
+				8E285DA83EBB4842839D0C74 /* RCTBackgroundGeolocation.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1302,6 +1312,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1311,6 +1323,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-paypal-wrapper\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-payments\lib\ios/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
+					"$(SRCROOT)/../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation/**",
 				);
 			};
 			name = Debug;
@@ -1339,6 +1353,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1348,6 +1364,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-paypal-wrapper\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-payments\lib\ios/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
+					"$(SRCROOT)/../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation/**",
 				);
 			};
 			name = Release;
@@ -1377,6 +1395,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-paypal-wrapper\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-payments\lib\ios/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
+					"$(SRCROOT)/../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation/**",
 				);
 			};
 			name = Debug;
@@ -1405,6 +1425,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-paypal-wrapper\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-payments\lib\ios/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
+					"$(SRCROOT)/../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation/**",
 				);
 			};
 			name = Release;
@@ -1441,6 +1463,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1450,6 +1474,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-paypal-wrapper\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-payments\lib\ios/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
+					"$(SRCROOT)/../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation/**",
 				);
 			};
 			name = Debug;
@@ -1486,6 +1512,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1495,6 +1523,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-paypal-wrapper\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-payments\lib\ios/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
+					"$(SRCROOT)/../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation/**",
 				);
 			};
 			name = Release;
@@ -1530,6 +1560,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1539,6 +1571,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-paypal-wrapper\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-payments\lib\ios/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
+					"$(SRCROOT)/../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation/**",
 				);
 			};
 			name = Debug;
@@ -1574,6 +1608,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1583,6 +1619,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-paypal-wrapper\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-payments\lib\ios/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
+					"$(SRCROOT)/../node_modules/@mauron85/react-native-background-geolocation/ios/RCTBackgroundGeolocation/**",
 				);
 			};
 			name = Release;

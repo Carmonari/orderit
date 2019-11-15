@@ -208,77 +208,77 @@ class Cart extends Component {
     const { infoUser } = this.props.user
     let total = 0.0;
     let cart = [];
-    if(infoUser.direcciones.length > 0){
+    let nombreDire = '';
+    AsyncStorage.getItem("ENTREGA", (err, res) => {
+      console.log(res)
+      if (!res) this.setState({entrega: []});
+      else this.setState({entrega: JSON.parse(res)});
+    });
+    if(infoUser.direcciones.length > 0 && isEmpty(this.state.entrega)){
       let getIndex = infoUser.direcciones.map(dire => dire.status.toString()).indexOf('true');
       let indice = getIndex !== -1 ? getIndex : 0;
-      Alert.alert(
-        'Nombre de la dirección que se enviará: a ',
-        infoUser.direcciones[indice].name,
-        [
-          {text: 'Cambiar dirección', onPress: () => this.props.history.push('/direcciones')},
-          {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'Aceptar', onPress: () => {
-            this.state.cartItems.map((item, i) => {
-              let totalP = 0.0;
-              totalP = parseFloat(item.precio) * parseFloat(item.quantity);
-              total = total + totalP;
-              cart.push({
-                product: item._id,
-                name: item.name,
-                img: item.img,
-                cantidad: item.quantity,
-                precio: item.precio
-              })
-            });
-            PayPal.pay({
-              price: `${total}`,
-              currency: 'MXN',
-              description: "Costo total",
-            }).then(confirm => {
-              console.warn(JSON.stringify(confirm))
-              let fechaEntrega = isEmpty(this.state.entrega) ? '' : this.state.entrega;
-               if(confirm.response.state == 'approved'){
-                 const newPedido = {
-                  idCompra: confirm.response.id,
-                  total: total,
-                  cart,
-                  direccion: [{
-                    name: infoUser.direcciones[indice].name,
-                    calle: infoUser.direcciones[indice].calle,
-                    numero_ext: infoUser.direcciones[indice].numero_ext,
-                    numero_int: infoUser.direcciones[indice].numero_int,
-                    colonia: infoUser.direcciones[indice].colonia,
-                    municipio: infoUser.direcciones[indice].municipio,
-                    estado: infoUser.direcciones[indice].estado,
-                    pais: infoUser.direcciones[indice].pais,
-                    cp: infoUser.direcciones[indice].cp
-                  }],
-                  entrega: fechaEntrega
-                 }
-                 this.props.addShopping(newPedido);
-                 this.removeAll()
-                 this.alerta(confirm.response.id);
-               }
-            }).catch(error => console.log(error));
-          }},
-        ],
-        { cancelable: false }
-      )
+      nombreDire = infoUser.direcciones[indice].name;
     } else{
-      Alert.alert(
-        'Sin dirección de envio',
-        'Debe de agregar una dirección',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {text: 'Agregar dirección', onPress: () => this.props.history.push('/add-direccion')},
-        ],
-        {cancelable: false},
-      );
+      nombreDire = 'Mi ubicación ¿esta de acuerdo?'
     }
+
+    Alert.alert(
+      'Nombre de la dirección que se enviará: a ',
+      nombreDire,
+      [
+        {text: 'Cambiar dirección', onPress: () => this.props.history.push('/direcciones')},
+        {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'Aceptar', onPress: () => {
+          this.state.cartItems.map((item, i) => {
+            let totalP = 0.0;
+            totalP = parseFloat(item.precio) * parseFloat(item.quantity);
+            total = total + totalP;
+            cart.push({
+              product: item._id,
+              name: item.name,
+              img: item.img,
+              cantidad: item.quantity,
+              precio: item.precio
+            })
+          });
+          PayPal.pay({
+            price: `${total}`,
+            currency: 'MXN',
+            description: "Costo total",
+          }).then(confirm => {
+            console.warn(JSON.stringify(confirm))
+            let fechaEntrega = isEmpty(this.state.entrega) ? '' : this.state.entrega;
+              if(confirm.response.state == 'approved'){
+                const newPedido = {
+                idCompra: confirm.response.id,
+                total: total,
+                cart,
+                direccion: [{
+                  name: infoUser.direcciones[indice].name,
+                  calle: infoUser.direcciones[indice].calle,
+                  numero_ext: infoUser.direcciones[indice].numero_ext,
+                  numero_int: infoUser.direcciones[indice].numero_int,
+                  colonia: infoUser.direcciones[indice].colonia,
+                  municipio: infoUser.direcciones[indice].municipio,
+                  estado: infoUser.direcciones[indice].estado,
+                  pais: infoUser.direcciones[indice].pais,
+                  cp: infoUser.direcciones[indice].cp
+                }],
+                entrega: fechaEntrega
+                }
+                this.props.addShopping(newPedido);
+                this.removeAll();
+                if(fechaEntrega){
+                  this.alerta(confirm.response.id);
+                } else {
+                this.props.history.push('/tracking')
+                }
+              }
+          }).catch(error => console.log(error));
+        }},
+      ],
+      { cancelable: false }
+    )
   }
 
   checkoutAndroid() {

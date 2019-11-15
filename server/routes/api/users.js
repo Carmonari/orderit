@@ -233,7 +233,7 @@ router.put('/profile/:id', passport.authenticate('jwt', { session: false }), asy
 // @access  Private
 router.patch('/direcciones', passport.authenticate('jwt', { session: false }), async (req, res) =>{
   try {
-    const { name, calle, numero_ext, numero_int, colonia, municipio, cp, estado, pais } = req.body;
+    const { name, calle, numero_ext, numero_int, colonia, municipio, cp, estado, pais, place_id, direComplete } = req.body;
     let fields = {
       name,
       calle,
@@ -243,7 +243,9 @@ router.patch('/direcciones', passport.authenticate('jwt', { session: false }), a
       municipio,
       estado,
       pais,
-      cp
+      cp,
+      direComplete,
+      place_id
     }
     let address = await User.findById(req.user.id);
     address.direcciones.unshift(fields);
@@ -291,7 +293,7 @@ router.patch('/direcciones/:id', passport.authenticate('jwt', { session: false }
   try {
     let address = await User.findById(req.user.id);
 
-    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais } = req.body;
+    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais, place_id, direComplete } = req.body;
 
     address.direcciones.map(dire => {
       if(dire._id.toString() === req.params.id) {
@@ -304,7 +306,9 @@ router.patch('/direcciones/:id', passport.authenticate('jwt', { session: false }
           dire.colonia = colonia,
           dire.municipio = municipio,
           dire.estado = estado,
-          dire.pais = pais
+          dire.pais = pais,
+          dire.direComplete,
+          dire.place_id
         )
       }
     });
