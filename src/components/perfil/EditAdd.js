@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { View, ScrollView, ImageBackground, BackHandler } from 'react-native';
+import { View, ImageBackground, BackHandler } from 'react-native';
 import { PropTypes } from 'prop-types';
-import { Button } from 'react-native-paper';
 import Header from '../common/Header';
 import SideDrawer from '../common/SideDrawer';
 import styles from '../common/css';
 import Boton from '../common/Boton';
 import { connect } from 'react-redux';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import InputText from '../common/InputText';
 import { getOneAddress, editAddress } from '../../actions/usersActions';
 
@@ -27,7 +27,7 @@ class EditAdd extends Component {
       direComplete: ''
     }
   }
-
+  
   componentDidMount(){
     this.props.getOneAddress(this.props.match.params.idAdd);
     BackHandler.addEventListener('hardwareBackPress', this.back);
@@ -35,21 +35,13 @@ class EditAdd extends Component {
 
   componentWillReceiveProps(nextProps){
     if(nextProps.user.direccion !== this.props.user.direccion){
-      const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais } = nextProps.user.direccion;
+      const { name } = nextProps.user.direccion;
       this.setState({
-        name,
-        calle,
-        numero_ext,
-        numero_int,
-        cp,
-        colonia,
-        municipio,
-        estado,
-        pais
+        name
       })
     }
   }
-  
+
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.back);
   }
@@ -66,8 +58,8 @@ class EditAdd extends Component {
   }
 
   guardar = () => {
-    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais } = this.state;
-
+    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais, place_id, direComplete } = this.state;
+    
     const editAdd = {
       name,
       calle,
@@ -77,7 +69,9 @@ class EditAdd extends Component {
       colonia,
       municipio,
       estado,
-      pais
+      pais,
+      place_id,
+      direComplete
     }
 
     this.props.editAddress(this.props.match.params.idAdd, editAdd, this.props.history);
@@ -86,87 +80,95 @@ class EditAdd extends Component {
   render() {
     return (
       <SideDrawer>
-        <Header menu={false} open={this.back} carro={this.props.numberItems}/>
+        <Header menu={false} open={this.back} carro={this.props.numberItems} />
         <ImageBackground source={require('../../../assets/background.png')} style={[styles.imagenFondo, styles.flex1]}>
           <View style={{margin: 10, flex: 1}}>
-            <ScrollView>
-              <View style={{marginBottom: 30}}>
-                <InputText
-                  label="Nombre"
-                  value={this.state.name}
-                  name="name"
-                  onChange={this.onChange}
-                  placeholder="Nombre"
-                  style={[styles.margenT10, styles.margenH10]}
-                />
-                <InputText
-                  label="Calle"
-                  value={this.state.calle}
-                  name="calle"
-                  onChange={this.onChange}
-                  placeholder="Calle"
-                  style={[styles.margenT10, styles.margenH10]}
-                />
-                <InputText
-                  label="Numero exterior"
-                  value={this.state.numero_ext}
-                  name="numero_ext"
-                  onChange={this.onChange}
-                  placeholder="Numero exterior"
-                  style={[styles.margenT10, styles.margenH10]}
-                />
-                <InputText
-                  label="Numero interior"
-                  value={this.state.numero_int}
-                  name="numero_int"
-                  onChange={this.onChange}
-                  placeholder="Numero interior"
-                  style={[styles.margenT10, styles.margenH10]}
-                />
-                <InputText
-                  label="CP"
-                  value={this.state.cp}
-                  name="cp"
-                  onChange={this.onChange}
-                  placeholder="CP"
-                  style={[styles.margenT10, styles.margenH10]}
-                />
-                <InputText
-                  label="Colonia"
-                  value={this.state.colonia}
-                  name="colonia"
-                  onChange={this.onChange}
-                  placeholder="Colonia"
-                  style={[styles.margenT10, styles.margenH10]}
-                />
-                <InputText
-                  label="Municipio"
-                  value={this.state.municipio}
-                  name="municipio"
-                  onChange={this.onChange}
-                  placeholder="Municipio"
-                  style={[styles.margenT10, styles.margenH10]}
-                />
-                <InputText
-                  label="Estado"
-                  value={this.state.estado}
-                  name="estado"
-                  onChange={this.onChange}
-                  placeholder="Estado"
-                  style={[styles.margenT10, styles.margenH10]}
-                />
-                <InputText
-                  label="Pais"
-                  value={this.state.pais}
-                  name="pais"
-                  onChange={this.onChange}
-                  placeholder="Pais"
-                  style={styles.margen10}
-                />
-              </View>
-            </ScrollView>
-            <View style={[styles.margen10, styles.fijo]}>
-              <Boton style={{marginBottom: 10, borderRadius: 15}}  mode="contained" onPress={this.guardar} name="Guardar" />
+            <View style={{height: 50, marginBottom: 10}}>
+              <GooglePlacesAutocomplete
+                placeholder='Search'
+                minLength={2} // minimum length of text to search
+                autoFocus={false}
+                returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
+                keyboardAppearance={'light'} // Can be left out for default keyboardAppearance https://facebook.github.io/react-native/docs/textinput.html#keyboardappearance
+                listViewDisplayed='auto'    // true/false/undefined
+                fetchDetails={true}
+                renderDescription={row => row.description} // custom description render
+                onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                  this.onChange('place_id', details.place_id);
+                  let dir = [];
+                  details.address_components.map(item => {
+                    dir.push(item.long_name)
+                    if(item.types[0] === 'street_number'){
+                      this.onChange("numero_ext", item.long_name)
+                    } else if(item.types[0] === 'route'){
+                      this.onChange("calle", item.long_name)
+                    } else if(item.types[0] === 'sublocality_level_1'){
+                      this.onChange("colonia", item.long_name)
+                    } else if(item.types[0] === 'locality'){
+                      this.onChange("municipio", item.long_name)
+                    } else if(item.types[0] === 'administrative_area_level_1'){
+                      this.onChange("estado", item.long_name)
+                    } else if(item.types[0] === 'country'){
+                      this.onChange("pais", item.long_name)
+                    } else if(item.types[0] === 'postal_code'){
+                      this.onChange("cp", item.long_name)
+                    }
+                  })
+                  this.onChange('direComplete', dir.join(", "));
+                }}
+
+                listViewDisplayed={false}
+                getDefaultValue={() => ''}
+
+                query={{
+                  // available options: https://developers.google.com/places/web-service/autocomplete
+                  key: 'AIzaSyDcS03AM2Nh90g0VTGxA-5KN98scaz6eqw',
+                  language: 'es', // language of the results
+                  types: 'geocode' // default: 'geocode'
+                }}
+
+                styles={{
+                  textInputContainer: {
+                    width: '100%'
+                  },
+                  description: {
+                    fontWeight: 'bold'
+                  },
+                  predefinedPlacesDescription: {
+                    color: '#1faadb'
+                  },
+                  listView: {
+                    position: 'absolute',
+                    zIndex: 2,
+                    top: 50,
+                    height: 500,
+                    width: "100%",
+                    backgroundColor: "#FFF"
+                  }
+                }}
+
+                currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
+                currentLocationLabel="Current location"
+                nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                
+                GooglePlacesDetailsQuery={{
+                  // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
+                  fields: 'formatted_address',
+                }}
+                debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
+              />
+            </View>
+            <View>
+              <InputText
+                label="Nombre de dirección"
+                value={this.state.name}
+                name="name"
+                onChange={this.onChange}
+                placeholder="Nombre de dirección"
+              />
+            </View>
+            <View style={{zIndex: 0, position: 'absolute', bottom: 30, width: '100%'}}>
+              <Boton style={{zIndex: 0, marginBottom: 10, borderRadius: 15}} mode="contained" onClick={this.guardar} name="Guardar" />
             </View>
           </View>
         </ImageBackground>
@@ -176,9 +178,9 @@ class EditAdd extends Component {
 }
 
 EditAdd.propTypes = {
+  user: PropTypes.object.isRequired,
   getOneAddress: PropTypes.func.isRequired,
-  editAddress: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  editAddress: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({

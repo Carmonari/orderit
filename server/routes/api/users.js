@@ -307,8 +307,8 @@ router.patch('/direcciones/:id', passport.authenticate('jwt', { session: false }
           dire.municipio = municipio,
           dire.estado = estado,
           dire.pais = pais,
-          dire.direComplete,
-          dire.place_id
+          dire.direComplete = direComplete,
+          dire.place_id = place_id
         )
       }
     });
