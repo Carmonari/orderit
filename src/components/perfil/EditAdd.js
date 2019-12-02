@@ -24,7 +24,8 @@ class EditAdd extends Component {
       estado: '',
       pais: '',
       place_id: '',
-      direComplete: ''
+      direComplete: '',
+      direCompleteOld: ''
     }
   }
   
@@ -35,9 +36,10 @@ class EditAdd extends Component {
 
   componentWillReceiveProps(nextProps){
     if(nextProps.user.direccion !== this.props.user.direccion){
-      const { name } = nextProps.user.direccion;
+      const { name, direComplete } = nextProps.user.direccion;
       this.setState({
-        name
+        name,
+        direCompleteOld: direComplete
       })
     }
   }
@@ -58,20 +60,26 @@ class EditAdd extends Component {
   }
 
   guardar = () => {
-    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais, place_id, direComplete } = this.state;
-    
-    const editAdd = {
-      name,
-      calle,
-      numero_ext,
-      numero_int,
-      cp,
-      colonia,
-      municipio,
-      estado,
-      pais,
-      place_id,
-      direComplete
+    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais, place_id, direComplete, direCompleteOld } = this.state;
+    let editAdd = null
+    if(direComplete == '' || direCompleteOld == direComplete){
+      editAdd = {
+        name
+      }
+    } else{
+      editAdd = {
+        name,
+        calle,
+        numero_ext,
+        numero_int,
+        cp,
+        colonia,
+        municipio,
+        estado,
+        pais,
+        place_id,
+        direComplete
+      }
     }
 
     this.props.editAddress(this.props.match.params.idAdd, editAdd, this.props.history);
@@ -85,7 +93,7 @@ class EditAdd extends Component {
           <View style={{margin: 10, flex: 1}}>
             <View style={{height: 50, marginBottom: 10}}>
               <GooglePlacesAutocomplete
-                placeholder='Search'
+                placeholder={this.state.direCompleteOld}
                 minLength={2} // minimum length of text to search
                 autoFocus={false}
                 returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
@@ -128,8 +136,12 @@ class EditAdd extends Component {
                 }}
 
                 styles={{
+                  textInput: {
+                    height: 50
+                  },
                   textInputContainer: {
-                    width: '100%'
+                    width: '100%',
+                    height: 70
                   },
                   description: {
                     fontWeight: 'bold'
@@ -160,6 +172,7 @@ class EditAdd extends Component {
             </View>
             <View>
               <InputText
+                style={{marginTop: 20}}
                 label="Nombre de dirección"
                 value={this.state.name}
                 name="name"

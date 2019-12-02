@@ -12,7 +12,8 @@ class ProgramarEnvio extends Component {
     super(props);
     this.state = {
       isDateTimePickerVisible: false,
-      entrega: ''
+      entrega: '',
+      enable: true
     }
   }
 
@@ -41,13 +42,15 @@ class ProgramarEnvio extends Component {
     this._hideDateTimePicker();
     let newDate = date.toString().split(' ').slice(0,5).join(' ');
     this.setState({
-      entrega: newDate
+      entrega: newDate,
+      enable: false
     })
   };
 
   eliminar = () => {
     AsyncStorage.setItem("ENTREGA",JSON.stringify([]));
     this.setState({entrega: []});
+    this.props.history.goBack()
   }
 
   guardar = () => {
@@ -88,7 +91,7 @@ class ProgramarEnvio extends Component {
             <Boton mode="contained" style={{
                 flex: 1, margin: 5, borderRadius: 15, backgroundColor: 'red'
               }} onClick={() => this.eliminar()} name="Eliminar" />
-            <Boton mode="contained" style={{flex: 1, margin: 5, borderRadius: 15}} onClick={() => this.guardar()} name="Guardar" />
+            <Boton dis={this.state.enable} mode="contained" style={{flex: 1, margin: 5, borderRadius: 15}} onClick={() => this.guardar()} name="Guardar" />
           </View>
         </View>
       </SideDrawer>

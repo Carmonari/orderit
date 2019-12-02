@@ -293,23 +293,29 @@ router.patch('/direcciones/:id', passport.authenticate('jwt', { session: false }
   try {
     let address = await User.findById(req.user.id);
 
-    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais, place_id, direComplete } = req.body;
+    const { name, calle, numero_ext, numero_int, cp, colonia, municipio, estado, pais, place_id, direComplete = '' } = req.body;
 
     address.direcciones.map(dire => {
       if(dire._id.toString() === req.params.id) {
-        return (
-          dire.name = name,
-          dire.calle = calle,
-          dire.numero_ext = numero_ext,
-          dire.numero_int = numero_int,
-          dire.cp = cp,
-          dire.colonia = colonia,
-          dire.municipio = municipio,
-          dire.estado = estado,
-          dire.pais = pais,
-          dire.direComplete = direComplete,
-          dire.place_id = place_id
-        )
+        if(direComplete === ''){
+         return (
+           dire.name = name
+         ) 
+        } else{
+          return (
+            dire.name = name,
+            dire.calle = calle,
+            dire.numero_ext = numero_ext,
+            dire.numero_int = numero_int,
+            dire.cp = cp,
+            dire.colonia = colonia,
+            dire.municipio = municipio,
+            dire.estado = estado,
+            dire.pais = pais,
+            dire.direComplete = direComplete,
+            dire.place_id = place_id
+          )
+        }
       }
     });
 

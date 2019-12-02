@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { View, Image, Text, ScrollView, Alert, BackHandler, Dimensions } from 'react-native';
-import { Redirect } from 'react-router-native'; 
 import { List, IconButton, Divider } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import SideDrawer from '../common/SideDrawer';
@@ -12,7 +11,6 @@ import Boton from '../common/Boton';
 import { connect } from 'react-redux';
 
 import PayPal from 'react-native-paypal-wrapper';
-import isEmpty from '../../validation/is-empty';
 PayPal.initialize(PayPal.SANDBOX, "AbRCF2nU4tnsR7Hgn69oUoVK3Zkar-ruPtcSi_74r4EvWLgDH8WTeyOjX15YyWpcMewXHE6r90fkncms");
 
 //Android
@@ -55,7 +53,9 @@ class Cart extends Component {
     super(props);
     this.state = {
       cartItems: [],
-      entrega: []
+      entrega: [],
+      latitude: null,
+      longitude: null
     }
   }
 
@@ -204,78 +204,138 @@ class Cart extends Component {
     )
   }
 
-  checkoutPaypal = () => {
+  pagoExpressProgram = (infoUser, cart, indice, total, fechaEntrega, address = null) => {
+    let newPedido = {}
+    this.state.cartItems.map((item, i) => {
+      let totalP = 0.0;
+      totalP = parseFloat(item.precio) * parseFloat(item.quantity);
+      total = total + totalP;
+      cart.push({
+        product: item._id,
+        name: item.name,
+        img: item.img,
+        cantidad: item.quantity,
+        precio: item.precio
+      })
+    });
+    PayPal.pay({
+      price: `${total}`,
+      currency: 'MXN',
+      description: "Costo total",
+    }).then(confirm => {
+      if(confirm.response.state === 'approved'){
+        if(address && !fechaEntrega){
+          newPedido = {
+            idCompra: confirm.response.id,
+            total: total,
+            cart,
+            direccion: [{
+              name: 'Ubicación',
+              calle: address['calle'],
+              numero_ext: address['numero_ext'],
+              numero_int: address['numero_int'],
+              colonia: address['colonia'],
+              municipio: address['municipio'],
+              estado: address['estado'],
+              pais: address['pais'],
+              cp: address['cp']
+            }],
+            entrega: fechaEntrega
+          }
+        } else {
+          newPedido = {
+            idCompra: confirm.response.id,
+            total: total,
+            cart,
+            direccion: [{
+              name: infoUser.direcciones[indice].name,
+              calle: infoUser.direcciones[indice].calle,
+              numero_ext: infoUser.direcciones[indice].numero_ext,
+              numero_int: infoUser.direcciones[indice].numero_int,
+              colonia: infoUser.direcciones[indice].colonia,
+              municipio: infoUser.direcciones[indice].municipio,
+              estado: infoUser.direcciones[indice].estado,
+              pais: infoUser.direcciones[indice].pais,
+              cp: infoUser.direcciones[indice].cp
+            }],
+            entrega: fechaEntrega
+          }
+        }
+          this.props.addShopping(newPedido)
+          this.removeAll()
+          if(fechaEntrega){
+            this.alerta(confirm.response.id);
+          } else {
+            AsyncStorage.setItem("MAP", 'true');
+            this.props.history.push('/tracking')
+          }
+        }
+    }).catch(error => console.log(error));
+  }
+
+  checkoutPaypal = async () => {
+    let address = [];
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          error: null,
+        });
+      },
+      (error) => this.setState({ error: error.message }),
+      { enableHighAccuracy: false, timeout: 20000,  maximumAge: 1000 },
+    )
+    await fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.state.latitude + ',' + this.state.longitude + '&key=AIzaSyDcS03AM2Nh90g0VTGxA-5KN98scaz6eqw')
+    .then((response) => response.json())
+    .then((responseJson) => {
+      //console.warn('ADDRESS GEOCODE is BACK!! => ' + responseJson.results[0]);
+      responseJson.results[0].address_components.map(item => {
+        if(item.types[0] === 'street_number'){
+          address["numero_ext"] = item.long_name
+        } else if(item.types[0] === 'route'){
+          address["calle"] = item.long_name
+        } else if(item.types[0] === 'sublocality_level_1'){
+          address["colonia"] = item.long_name
+        } else if(item.types[0] === 'locality'){
+          address["municipio"] = item.long_name
+        } else if(item.types[0] === 'administrative_area_level_1'){
+          address["estado"] = item.long_name
+        } else if(item.types[0] === 'country'){
+          address["pais"] = item.long_name
+        } else if(item.types[0] === 'postal_code'){
+          address["cp"] = item.long_name
+        }
+      })
+    })
+
     const { infoUser } = this.props.user
     let total = 0.0;
     let cart = [];
     let nombreDire = '';
-    AsyncStorage.getItem("ENTREGA", (err, res) => {
-      console.log(res)
-      if (!res) this.setState({entrega: []});
-      else this.setState({entrega: JSON.parse(res)});
+    let indice = 0;
+    let sToA = null;
+    let aDonde = "direcciones"
+    const entrega = await AsyncStorage.getItem("ENTREGA", (err, res) => {
+      !res ? null : JSON.parse(res)
     });
-    if(infoUser.direcciones.length > 0 && isEmpty(this.state.entrega)){
+    if(infoUser.direcciones.length > 0 && (entrega !== '[[]]' && entrega !== '[]' && entrega !== null)){
       let getIndex = infoUser.direcciones.map(dire => dire.status.toString()).indexOf('true');
-      let indice = getIndex !== -1 ? getIndex : 0;
+      indice = getIndex !== -1 ? getIndex : 0;
       nombreDire = infoUser.direcciones[indice].name;
+      sToA = entrega.slice(2,-2);
     } else{
       nombreDire = 'Mi ubicación ¿esta de acuerdo?'
+      aDonde = "change-address"
     }
 
     Alert.alert(
       'Nombre de la dirección que se enviará: a ',
       nombreDire,
       [
-        {text: 'Cambiar dirección', onPress: () => this.props.history.push('/direcciones')},
+        {text: 'Cambiar dirección', onPress: () => this.props.history.push(`/${aDonde}`)},
         {text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'Aceptar', onPress: () => {
-          this.state.cartItems.map((item, i) => {
-            let totalP = 0.0;
-            totalP = parseFloat(item.precio) * parseFloat(item.quantity);
-            total = total + totalP;
-            cart.push({
-              product: item._id,
-              name: item.name,
-              img: item.img,
-              cantidad: item.quantity,
-              precio: item.precio
-            })
-          });
-          PayPal.pay({
-            price: `${total}`,
-            currency: 'MXN',
-            description: "Costo total",
-          }).then(confirm => {
-            console.warn(JSON.stringify(confirm))
-            let fechaEntrega = isEmpty(this.state.entrega) ? '' : this.state.entrega;
-              if(confirm.response.state == 'approved'){
-                const newPedido = {
-                idCompra: confirm.response.id,
-                total: total,
-                cart,
-                direccion: [{
-                  name: infoUser.direcciones[indice].name,
-                  calle: infoUser.direcciones[indice].calle,
-                  numero_ext: infoUser.direcciones[indice].numero_ext,
-                  numero_int: infoUser.direcciones[indice].numero_int,
-                  colonia: infoUser.direcciones[indice].colonia,
-                  municipio: infoUser.direcciones[indice].municipio,
-                  estado: infoUser.direcciones[indice].estado,
-                  pais: infoUser.direcciones[indice].pais,
-                  cp: infoUser.direcciones[indice].cp
-                }],
-                entrega: fechaEntrega
-                }
-                this.props.addShopping(newPedido);
-                this.removeAll();
-                if(fechaEntrega){
-                  this.alerta(confirm.response.id);
-                } else {
-                this.props.history.push('/tracking')
-                }
-              }
-          }).catch(error => console.log(error));
-        }},
+        {text: 'Aceptar', onPress: () => this.pagoExpressProgram(infoUser, cart, indice, total, sToA, address)}
       ],
       { cancelable: false }
     )

@@ -30,6 +30,8 @@ import Pedidos from './src/components/perfil/Pedidos';
 import ProgramarEnvio  from './src/components/common/ProgramarEnvio';
 import DetalleCompra from './src/components/perfil/DetalleCompra';
 import Tracking from './src/components/common/Tracking';
+import ReturnMap from './src/components/common/ReturnMap';
+import ChangeAddress from './src/components/common/ChangeAddress';
 
 //Check for token
 AsyncStorage.getItem('jwtToken').then(token => {
@@ -56,12 +58,16 @@ const theme = {
 
 class App extends Component {
   state = {
-    numItem: 0
+    numItem: 0,
+    mapDelivery: false
   }
 
   componentDidMount(){
     SplashScreen.hide();
     this.sumItem()
+    AsyncStorage.getItem('MAP', (err, res) => {
+      this.setState({mapDelivery: res})
+    })
   }
 
   sumItem = () => {
@@ -75,6 +81,10 @@ class App extends Component {
   }
 
   render() {
+    let mostrar = null;
+    if(this.state.mapDelivery !== 'true'){
+      mostrar = <ReturnMap />
+    }
     return (
       <Provider store={store}>
         <PaperProvider theme={theme}>
@@ -98,9 +108,11 @@ class App extends Component {
               <PrivateRoute exact path="/favorites" component={Favorites} numberItems={this.state.numItem} />
               <PrivateRoute exact path="/cart" component={Cart} numberItems={this.state.numItem} addItem={this.sumItem} />
               <PrivateRoute exact path="/programar-envio" component={ProgramarEnvio} numberItems={this.state.numItem} />
+              <PrivateRoute exact path="/change-address" component={ChangeAddress} />>
               <PrivateRoute exact path="/search" component={Search} numberItems={this.state.numItem} />
-              <PrivateRoute exact path="/tracking" component={Tracking} />
+              <PrivateRoute exact path="/tracking" component={Tracking} numberItems={this.state.numItem}/>
             </Switch>
+            {mostrar}
           </Router>
         </PaperProvider>
       </Provider>
