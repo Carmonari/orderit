@@ -7,6 +7,7 @@ import { getFav, addLike, unLike } from '../../actions/productActions';
 import Product from '../products/Product';
 import { connect } from 'react-redux';
 import styles from '../products/css';
+import Loading from '../common/Loading';
 
 class Favorites extends Component {
   constructor(props){
@@ -54,21 +55,29 @@ class Favorites extends Component {
   }
 
   render() {
-    const { products } = this.props.product;
+    const { products, loading } = this.props.product;
     const { sections } = this.props.section;
+
+    let load = loading ? (
+      <View style={styles.loading}>
+        <Loading />
+      </View>
+    ) : (
+      <View style={[styles.flex1, styles.margenB15]}>
+        <FlatList
+          data={products}
+          numColumns="2"
+          renderItem={({item}) => <Product {...item} key={item._id} addLike={this.addLike} unLike={this.unLike}
+                                    history={this.props.history} sections={sections} findUserLike={this.findUserLike} /> }
+          keyExtractor={(item) => item._id}
+        />
+      </View>
+    )
 
     return (
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} carro={this.props.numberItems} />
-        <View style={[styles.flex1, styles.margenB15]}>
-          <FlatList
-            data={products}
-            numColumns="2"
-            renderItem={({item}) => <Product {...item} key={item._id} addLike={this.addLike} unLike={this.unLike}
-                                      history={this.props.history} sections={sections} findUserLike={this.findUserLike} /> }
-            keyExtractor={(item) => item._id}
-          />
-        </View>
+        {load}
       </SideDrawer>
     )
   }

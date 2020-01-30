@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator} from 'react-native';
+import socketIO from 'socket.io-client';
 import MapView, { Marker } from 'react-native-maps';
+import PolyLine from '@mapbox/polyline';
 
 import SideDrawer from '../common/SideDrawer';
 import Header from '../common/Header';
@@ -12,11 +14,10 @@ export default class Tracking extends Component {
       error: '',
       latitude: null,
       longitude: null,
-      destination: '',
       predictions: [],
       pointCoords: [],
       routeResponse: '',
-      lookingForDelivery: true,
+      lookingForDelivery: false,
       textDelivery: "Buscando repartidor...",
       driverIsOnTheWay: false,
       driverLocation: []
@@ -24,13 +25,14 @@ export default class Tracking extends Component {
   }
 
   componentDidMount(){
-    navigator.geolocation.watchPosition(
+    this.watchId = navigator.geolocation.watchPosition(
       (position) => {
         this.setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          error: null,
         });
+        this.getRouteDirections();
+        this.requestDelivery();
       },
       (error) => this.setState({ error: error.message }),
       { enableHighAccuracy: false, timeout: 20000,  maximumAge: 1000 },
@@ -41,30 +43,29 @@ export default class Tracking extends Component {
     navigator.geolocation.clearWatch(this.watchId);
   }
 
-  async getRouteDirections(placeId, destinationName){
+  async getRouteDirections(){
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${this.state.latitude}, ${this.state.longitude}&destination=place_id:${placeId}&key=AIzaSyDcS03AM2Nh90g0VTGxA-5KN98scaz6eqw`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${this.state.latitude},${this.state.longitude}&key=AIzaSyDcS03AM2Nh90g0VTGxA-5KN98scaz6eqw`
       );
-      if(placeId){
-        const json = await response.json();
-        console.log(destinationName);
-        const points = PolyLine.decode(json.routes[0].overview_polyline.points);
-        const pointCoords = points.map(point => {
-          return {
-            latitude: point[0],
-            longitude: point[1]
-          }
-        })
-        this.setState({
-          pointCoords,
-          predictions: [],
-          destination: destinationName,
-          routeResponse: json
-        });
-        Keyboard.dismiss();
-        this.map.fitToCoordinates(pointCoords)
-      }
+      const json = await response.json();
+      console.warn(Object.keys(json) + " si ");
+      const points = PolyLine.decode(json.routes[0].overview_polyline.points);
+      const pointCoords = points.map(point => {
+        return {
+          latitude: point[0],
+          longitude: point[1]
+        }
+      })
+      this.setState({
+        pointCoords,
+        predictions: [],
+        routeResponse: json
+      });
+      Keyboard.dismiss();
+      this.map.fitToCoordinates(pointCoords)
+      
+      console.warn(this.state.routeResponse);
     } catch (err) {
       console.error(err);
     }
@@ -73,6 +74,30 @@ export default class Tracking extends Component {
   back = async () => {
     await this.props.history.push('/home');
     return true;
+  }
+
+  async requestDelivery() {
+    this.setState({
+      lookingForDelivery: true
+    });
+    const socket = await socketIO.connect("http://192.168.15.2:3000");
+    socket.on("connect", () => {
+      console.log("connected");
+      //Request taxi
+      socket.emit("deliveryRequest", this.state.routeResponse);
+    });
+
+    socket.on("deliveryLocation", (deliveryLocation) => {
+      let pointCoords = [...this.state.pointCoords, deliveryLocation];
+      this.map.fitToCoordinates(pointCoords, {
+        edgePadding: {top:40, bottom: 20, left: 20, right:20}
+      });
+      this.setState({
+        lookingForDelivery: false,
+        driverIsOnTheWay: true,
+        deliveryLocation: deliveryLocation
+      });
+    })
   }
 
   render(){

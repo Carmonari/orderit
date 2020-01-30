@@ -16,7 +16,7 @@ const User = require('../../models/User');
 
 /*Avatar*/
 var fs = require('fs');
-var multer  = require('multer');
+var multer = require('multer');
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -29,7 +29,7 @@ var storage = multer.diskStorage({
       "image/jpg": ".jpg"
     };
     let img = req.body.id + req.body.name + fileObj[file.mimetype];
-    cb(null, img) //File name after saving    
+    cb(null, img) //File name after saving
   }
 })
 
@@ -58,7 +58,7 @@ router.post('/upload', upload.single('fileData'), async (req, res) => {
 router.post('/register', async (req, res) => {
   try{
     const { errors, isValid } = validateRegisterInput(req.body);
-    
+
     //Check validation
     if(!isValid){
       return res.status(400).json(errors);
@@ -81,11 +81,11 @@ router.post('/register', async (req, res) => {
     let salt = await bcrypt.genSalt(10);
     let hash = await bcrypt.hash(newUser.password, salt);
     newUser.password = hash;
-    
+
     // Save in database
     let UserSave = await newUser.save();
     res.json(UserSave);
-    
+
   }
   catch(err) {
     return res.status(500).json({ msg: "Fail post register " });
@@ -180,7 +180,7 @@ router.post('/forgot', async (req, res) => {
       text: "New password", // plain text body
       html: "<b>"+randomstring+"</b>" // html body
     })
-  
+
     console.log("Message sent: %s", info.messageId);
     res.json(changePass);
   } catch (err) {
@@ -300,7 +300,7 @@ router.patch('/direcciones/:id', passport.authenticate('jwt', { session: false }
         if(direComplete === ''){
          return (
            dire.name = name
-         ) 
+         )
         } else{
           return (
             dire.name = name,

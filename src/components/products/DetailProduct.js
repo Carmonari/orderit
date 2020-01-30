@@ -9,6 +9,8 @@ import { IconButton, Snackbar  } from 'react-native-paper';
 import Boton from '../common/Boton';
 import isEmpty from '../../validation/is-empty';
 import { getProduct, productRating, addLike, unLike } from '../../actions/productActions';
+import Loading from '../common/Loading';
+import styles from './css';
 import { connect } from 'react-redux';
 
 class DetailProduct extends Component {
@@ -88,79 +90,86 @@ class DetailProduct extends Component {
   }
 
   render(){
-    const { detailProduct } = this.props.product;
+    const { detailProduct, loading } = this.props.product;
     let icono;
     let rait = this.props.product.rating ? this.props.product.rating.avgRaiting : 0;
 
     if(!isEmpty(detailProduct)){
       icono = this.findUserLike(detailProduct.likes) ? (
-        <TouchableOpacity onPress={() => this.unLike()} style={{position: 'absolute', bottom: 0}} >
+        <TouchableOpacity onPress={() => this.unLike()} style={styles.likes} >
           <IconButton size={30} icon='favorite' color="#41CE6C" />
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity onPress={() => this.addLike()} style={{position: 'absolute', bottom: 0}} >
+        <TouchableOpacity onPress={() => this.addLike()} style={styles.likes} >
           <IconButton size={30} icon='favorite-border' />
         </TouchableOpacity>
       );
     }
 
+    let load = loading ? (
+      <View style={styles.loading}>
+        <Loading />
+      </View>
+    ) : (
+      <View style={styles.contGeneral}>
+        <View>
+          <Image resizeMode="cover" style={styles.img} source={{ uri: `http://orderit.mx/productos/${detailProduct.img}`}} />
+          {
+            icono
+          }
+        </View>
+        <View style={styles.flex1}>
+          <View style={styles.contDatos}>
+            <View>
+              <Text style={styles.textoNombre}>{detailProduct.name}</Text>
+              <Text>{detailProduct.tipo}</Text>
+            </View>
+            <View>
+              <Text style={[styles.colorTexto, styles.textoNombre]}>${detailProduct.precio}</Text>
+            </View>
+          </View>
+          <ScrollView style={styles.flex1}>
+            <View style={styles.contDesc}>
+              <Text style={styles.font15}>{detailProduct.descripcion}</Text>
+            </View>
+          </ScrollView>
+          <View style={styles.contAdd}>
+            <View style={styles.contIconAdd}>
+              <IconButton icon="remove" size={27} onPress={this.rest} />
+              <View style={styles.textoCant}>
+                <Text style={styles.font21}>{this.state.cantidad}</Text>
+              </View>
+              <IconButton icon="add" size={27} onPress={this.add} />
+            </View>
+            <View>
+              <Boton style={styles.borderR15} mode="contained" onClick={() => this.agregar(detailProduct)} name="Agregar" />
+            </View>
+          </View>
+          <View style={styles.rating}>
+              <AirbnbRating
+                defaultRating={rait}
+                showRating={false}
+                size={18}
+                selectedColor="#41CE6C"
+                isDisabled={true}
+              />
+            </View>
+          <Snackbar
+            style={styles.backColor}
+            visible={this.state.visible}
+            onDismiss={() => this.setState({ visible: false })}
+            duration={3500}
+          > 
+            Se ha agregado al carrito de compras con éxito
+          </Snackbar>
+        </View>
+      </View>
+    )
+
     return(
       <SideDrawer>
         <Header menu={false} open={this.back} carro={this.props.numberItems} />
-        <View style={{flex: 1, marginBottom: 30}}>
-          <View>
-            <Image resizeMode="cover" style={{width: "100%", height: 350}} source={{ uri: `http://orderit.mx/productos/${detailProduct.img}`}} />
-            {
-              icono
-            }
-          </View>
-          <View style={{flex: 1}}>
-            <View style={{flexDirection: 'row', margin: 15, justifyContent: 'space-between'}}>
-              <View>
-                <Text style={{fontWeight: 'bold', fontSize: 18}}>{detailProduct.name}</Text>
-                <Text>{detailProduct.tipo}</Text>
-              </View>
-              <View>
-                <Text style={{color: "#41CE6C", fontWeight: 'bold', fontSize: 18}}>${detailProduct.precio}</Text>
-              </View>
-            </View>
-            <ScrollView style={{flex: 1}}>
-              <View style={{marginLeft: 50, marginBottom: 50, marginRight: 10, flex: 1}}>
-                <Text style={{fontSize: 15}}>{detailProduct.descripcion}</Text>
-              </View>
-            </ScrollView>
-            <View style={{flex: 1, flexDirection: 'row', marginHorizontal: 15, justifyContent: 'space-between',
-                         position: 'absolute', bottom: 25, backgroundColor: '#F3F0EC'}}>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <IconButton icon="remove" size={27} onPress={this.rest} />
-                <View style={{justifyContent: 'center', alignItems: 'center', paddingLeft: 30, paddingRight: 30}}>
-                  <Text style={{fontSize: 21}}>{this.state.cantidad}</Text>
-                </View>
-                <IconButton icon="add" size={27} onPress={this.add} />
-              </View>
-              <View>
-                <Boton style={{borderRadius: 15}} mode="contained" onClick={() => this.agregar(detailProduct)} name="Agregar" />
-              </View>
-            </View>
-            <View style={{position: 'absolute', bottom: 0, right: 0, paddingRight: 15 }}>
-                <AirbnbRating
-                  defaultRating={rait}
-                  showRating={false}
-                  size={18}
-                  selectedColor="#41CE6C"
-                  isDisabled={true}
-                />
-              </View>
-            <Snackbar
-              style={{backgroundColor: '#41CE6C'}}
-              visible={this.state.visible}
-              onDismiss={() => this.setState({ visible: false })}
-              duration={3500}
-            > 
-              Se ha agregado al carrito de compras con éxito
-            </Snackbar>
-          </View>
-        </View>
+        {load}
       </SideDrawer>
     )
   }

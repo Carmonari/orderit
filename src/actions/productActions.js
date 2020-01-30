@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { GET_ERRORS, GET_PRODUCTS_HOME, GET_PRODUCTS_SECTION, GET_PRODUCT, GET_PRODUCTS_FAV, GET_PRODUCTS_SEARCH,
-         GET_RATING } from './types';
+         GET_RATING, CLEAR_LOADING } from './types';
 
 //Products - get product for home
 export const getProductsForHome = (idHome) => async (dispatch) => {
   try{
+    dispatch({type: CLEAR_LOADING});
     let res = await axios.get(`http://10.0.2.2:5000/api/products/home/${idHome}`);
     dispatch({
       type: GET_PRODUCTS_HOME,
@@ -22,6 +23,7 @@ export const getProductsForHome = (idHome) => async (dispatch) => {
 //Products - get product for section
 export const getProductsForSection = (idHome) => async (dispatch) => {
   try{
+    dispatch({type: CLEAR_LOADING});
     let res = await axios.get(`http://10.0.2.2:5000/api/products/section/${idHome}`);
     dispatch({
       type: GET_PRODUCTS_SECTION,
@@ -39,6 +41,7 @@ export const getProductsForSection = (idHome) => async (dispatch) => {
 //Products - get product per search
 export const getProductSearch = (search) => async (dispatch) => {
   try{
+    dispatch({type: CLEAR_LOADING});
     let res = await axios.post(`http://10.0.2.2:5000/api/products/search`, search);
     dispatch({
       type: GET_PRODUCTS_SEARCH,
@@ -56,6 +59,7 @@ export const getProductSearch = (search) => async (dispatch) => {
 //Products - get product
 export const getProduct = (idProduct) => async (dispatch) => {
   try {
+    dispatch({type: CLEAR_LOADING});
     let res = await axios.get(`http://10.0.2.2:5000/api/products/detail/${idProduct}`);
     dispatch({
       type: GET_PRODUCT,
@@ -145,6 +149,7 @@ export const unLike = (id, HomeSection, idHome) => async (dispatch) => {
 // Get likes products for user
 export const getFav = () => async (dispatch) => {
   try {
+    dispatch({type: CLEAR_LOADING});
     let res = await axios.get(`http://10.0.2.2:5000/api/products/like/`);
     dispatch({
       type: GET_PRODUCTS_FAV,

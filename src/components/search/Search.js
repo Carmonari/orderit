@@ -7,6 +7,8 @@ import SideDrawer from '../common/SideDrawer';
 import { addLike, unLike, getProductSearch } from '../../actions/productActions';
 import { connect } from 'react-redux';
 import Product from '../products/Product';
+import Loading from '../common/Loading';
+import styles from '../products/css';
 
 class Search extends Component {
   constructor(props){
@@ -62,28 +64,36 @@ class Search extends Component {
   }
 
   render(){
-    const { products } = this.props.product;
+    const { products, loading } = this.props.product;
     const { sections } = this.props.section;
+
+    let load = loading ? (
+      <View style={styles.loading}>
+        <Loading />
+      </View>
+    ) : (
+      <View>
+        <FlatList
+          data={products}
+          numColumns="2"
+          renderItem={({item}) => <Product {...item} key={item._id} addLike={this.addLike} unLike={this.unLike} findUserLike={this.findUserLike}
+                                    history={this.props.history} sections={sections} /> }
+          keyExtractor={(item) => item._id}
+        />
+      </View>
+    )
 
     return (
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} carro={this.props.numberItems} />
-        <View style={{flex: 1}}>
+        <View style={styles.flex1}>
           <View>
             <Searchbar
               placeholder="Buscar"
               onChangeText={query => { this.buscar(query) }}
             />
           </View>
-          <View>
-            <FlatList
-              data={products}
-              numColumns="2"
-              renderItem={({item}) => <Product {...item} key={item._id} addLike={this.addLike} unLike={this.unLike} findUserLike={this.findUserLike}
-                                        history={this.props.history} sections={sections} /> }
-              keyExtractor={(item) => item._id}
-            />
-          </View>
+          {load}
         </View>
       </SideDrawer>
     )
