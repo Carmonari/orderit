@@ -32,6 +32,7 @@ import DetalleCompra from './src/components/perfil/DetalleCompra';
 import Tracking from './src/components/common/Tracking';
 import ReturnMap from './src/components/common/ReturnMap';
 import ChangeAddress from './src/components/common/ChangeAddress';
+import Password from './src/components/perfil/Password';
 
 //Check for token
 AsyncStorage.getItem('jwtToken').then(token => {
@@ -98,6 +99,7 @@ class App extends Component {
               <PrivateRoute exact path="/detail-product/:idProduct" component={DetailProduct} addItem={this.sumItem} numberItems={this.state.numItem} />
               <PrivateRoute exact path="/perfil-info" component={PerfilInfo} numberItems={this.state.numItem} />
               <PrivateRoute exact path="/perfil" component={Perfil} numberItems={this.state.numItem} />
+              <PrivateRoute exact path="/password" component={Password} numberItems={this.state.numItem} />
               <PrivateRoute exact path="/direcciones" component={Direcciones} numberItems={this.state.numItem} />
               <PrivateRoute exact path="/add-direccion" component={AddDir} numberItems={this.state.numItem} />
               <PrivateRoute exact path="/edit-direccion/:idAdd" component={EditAdd} numberItems={this.state.numItem} />

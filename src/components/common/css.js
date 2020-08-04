@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
     height: "100%"
   },
 
+  //height
+  maxHeight: {
+    maxHeight: Dimensions.get('window').height - 250
+  },
+
   // Estilos especificos
   viewImgEmail: {
     margin: 10,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, BackHandler } from 'react-native';
+import { View, FlatList, BackHandler, Text } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Header from '../common/Header';
@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import Product from '../products/Product';
 import Loading from '../common/Loading';
 import styles from '../products/css';
+import isEmpty from '../../validation/is-empty';
 
 class Search extends Component {
   constructor(props){
@@ -66,6 +67,21 @@ class Search extends Component {
   render(){
     const { products, loading } = this.props.product;
     const { sections } = this.props.section;
+    let exists = null;
+
+    isEmpty(products) ? exists = (
+      <View>
+        <Text>No existe producto</Text>
+      </View>
+    ) : exists = (
+      <FlatList
+        data={products}
+        numColumns="2"
+        renderItem={({item}) => <Product {...item} key={item._id} addLike={this.addLike} unLike={this.unLike} findUserLike={this.findUserLike}
+                                  history={this.props.history} sections={sections} /> }
+        keyExtractor={(item) => item._id}
+      />
+    )
 
     let load = loading ? (
       <View style={styles.loading}>
@@ -73,13 +89,7 @@ class Search extends Component {
       </View>
     ) : (
       <View>
-        <FlatList
-          data={products}
-          numColumns="2"
-          renderItem={({item}) => <Product {...item} key={item._id} addLike={this.addLike} unLike={this.unLike} findUserLike={this.findUserLike}
-                                    history={this.props.history} sections={sections} /> }
-          keyExtractor={(item) => item._id}
-        />
+        {exists}
       </View>
     )
 

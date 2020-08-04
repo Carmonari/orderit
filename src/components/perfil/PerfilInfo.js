@@ -52,17 +52,22 @@ class PerfilInfo extends Component {
       <SideDrawer open={this.state.open}>
         <Header menu={true} open={this.openClose} carro={this.props.numberItems} />
         <ImageBackground source={require('../../../assets/background.png')} style={styles.imagenFondo}>
-          <View style={{flex: 1}}>
+          <View style={styles.flex1}>
             <View style={{alignItems: 'center', marginTop: 20}}>
               <Avatar.Image size={128} source={image} />
             </View>
-            <View >
-              <ScrollView>
-                <List.Section style={{backgroundColor: '#FFF', margin: 20}}>
+            <View style={styles.flex1}>
+              <List.Section style={[styles.flex1, styles.fondoBlanco, styles.maxHeight, styles.margen20]}>
+                <ScrollView style={[styles.maxHeight]}>
                   <List.Item
                     title="Mi información"
                     left={() => <List.Icon icon="account-circle" />}
                     onPress={() => this.props.history.push('/perfil')}
+                  />
+                  <List.Item
+                    title="Cambiar password"
+                    left={() => <List.Icon icon="vpn-key" />}
+                    onPress={() => this.props.history.push('/password')}
                   />
                   <List.Item
                     title="Direcciones"
@@ -88,8 +93,8 @@ class PerfilInfo extends Component {
                     left={() => <List.Icon icon="eject" />}
                     onPress={() => this.props.logoutUser()}
                   />
-                </List.Section>
-              </ScrollView>
+                </ScrollView>
+              </List.Section>
             </View>
           </View>
         </ImageBackground>
